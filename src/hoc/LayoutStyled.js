@@ -1,8 +1,12 @@
-import styled from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
+import reset from 'styled-reset-advanced';
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
+const GlobalStyle = createGlobalStyle`
+  ${reset}
+  {
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
-export default Wrapper;
+export default GlobalStyle;

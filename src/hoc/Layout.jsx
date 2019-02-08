@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import Wrapper from './LayoutStyled';
-import Toolbar from '../components/Navigation/Toolbar/Toolbar';
+import GlobalStyle from './LayoutStyled';
+import Header from '../components/Navigation/Header/Header';
 
 class Layout extends Component {
   componentDidMount() {
@@ -12,11 +12,11 @@ class Layout extends Component {
   render() {
     const { children } = this.props;
     return (
-      <Wrapper>
-        <Toolbar />
+      <>
+        <GlobalStyle />
+        <Header />
         <div>{children}</div>
-        <div style={{ marginLeft: '10px' }}>Footer</div>
-      </Wrapper>
+      </>
     );
   }
 }

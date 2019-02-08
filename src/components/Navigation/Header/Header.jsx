@@ -1,12 +1,13 @@
 import React from 'react';
 
-import Wrapper from './ToolbarStyled';
+import Wrapper from './HeaderStyled';
+import NavigationItems from '../NavigationItems/NavigationItems';
 
 const toolbar = () => {
   return (
     <Wrapper>
       <div style={{ marginLeft: '10px' }}>Logo</div>
-      <div style={{ marginLeft: '10px' }}>Navigation</div>
+      <NavigationItems />
     </Wrapper>
   );
 };
