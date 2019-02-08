@@ -1,40 +1,18 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import Wrapper from './NavigationItemsStyled';
 import NavigationItem from './NavigationItem/NavigationItem';
 
-class NavigationItems extends Component {
-  signInHandler = () => {
-    console.log();
-  };
+import Button from '../../UI/Button/Button';
 
-  signUpHandler = () => {
-    console.log();
-  };
+const navigationItems = () => (
+  <Wrapper>
+    <NavigationItem path="/" name="Home" />
+    <NavigationItem path="/rules" name="Game rules" />
+    <NavigationItem path="/stats" name="Stats" />
+    <Button name="Sign In" />
+    <Button name="Sign Up" />
+  </Wrapper>
+);
 
-  render() {
-    return (
-      <Wrapper>
-        <NavigationItem path="/" name="Home" />
-        <NavigationItem path="/rules" name="Game rules" />
-        <NavigationItem path="/stats" name="Stats" />
-        <button
-          style={{ marginRight: '40px' }}
-          type="button"
-          onClick={this.signInHandler}
-        >
-          Sign In
-        </button>
-        <button
-          style={{ marginRight: '40px' }}
-          type="button"
-          onClick={this.signUpHandler}
-        >
-          Sign Up
-        </button>
-      </Wrapper>
-    );
-  }
-}
-
-export default NavigationItems;
+export default navigationItems;
