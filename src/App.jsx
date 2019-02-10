@@ -7,6 +7,7 @@ import StartPage from './containers/StartPage/StartPage';
 import Rules from './containers/Rules/Rules';
 import Stats from './containers/Stats/Stats';
 import Modal from './components/UI/Modal/Modal';
+import Register from './components/Forms/Register/Register';
 
 export const AppContext = React.createContext();
 
@@ -15,26 +16,30 @@ class App extends Component {
     show: false
   };
 
-  clickHandler = name => {
-    if (name === 'Sign In') {
-      this.setState(prevState => ({
-        show: !prevState.show
-      }));
+  openSignInWindow = name => {
+    if (name === 'Register') {
+      this.setState({
+        show: true
+      });
     }
+  };
+
+  closeSignInWindow = () => {
+    this.setState({
+      show: false
+    });
   };
 
   render() {
     const { show } = this.state;
-    let modal = null;
-    if (show) {
-      modal = <Modal />;
-    }
     return (
-      <AppContext.Provider value={this.clickHandler}>
+      <AppContext.Provider value={this.openSignInWindow}>
         <Layout>
           <Switch>
             <Wrapper>
-              {modal}
+              <Modal show={show} modalClosed={this.closeSignInWindow}>
+                <Register />
+              </Modal>
               <Route path="/" exact component={StartPage} />
               <Route path="/rules" exact component={Rules} />
               <Route path="/stats" exact component={Stats} />

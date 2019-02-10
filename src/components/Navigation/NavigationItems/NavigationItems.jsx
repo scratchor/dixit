@@ -10,8 +10,8 @@ const navigationItems = () => (
     <NavigationItem path="/" name="Home" />
     <NavigationItem path="/rules" name="Game rules" />
     <NavigationItem path="/stats" name="Stats" />
-    <Button name="Sign In" />
-    <Button name="Sign Up" />
+    <Button name="Login" />
+    <Button name="Register" />
   </Wrapper>
 );
 
