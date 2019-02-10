@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 import { List, Button } from './RegisterStyled';
 
@@ -27,7 +28,10 @@ class Register extends Component {
       password2
     };
 
-    console.log(newUser);
+    axios
+      .post('http://localhost:5000/api/users/register', newUser)
+      .then(response => console.log(response))
+      .catch(err => console.log(err.response.data));
   };
 
   render() {

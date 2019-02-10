@@ -8,37 +8,49 @@ import Rules from './containers/Rules/Rules';
 import Stats from './containers/Stats/Stats';
 import Modal from './components/UI/Modal/Modal';
 import Register from './components/Forms/Register/Register';
+import Login from './components/Forms/Login/Login';
 
 export const AppContext = React.createContext();
 
 class App extends Component {
   state = {
-    show: false
+    showLogin: false,
+    showRegister: false
   };
 
-  openSignInWindow = name => {
+  openModal = name => {
     if (name === 'Register') {
       this.setState({
-        show: true
+        showRegister: true
+      });
+    } else if (name === 'Login') {
+      this.setState({
+        showLogin: true
       });
     }
   };
 
-  closeSignInWindow = () => {
+  closeModal = () => {
     this.setState({
-      show: false
+      showRegister: false,
+      showLogin: false
     });
   };
 
   render() {
-    const { show } = this.state;
+    const { showRegister, showLogin } = this.state;
+
     return (
-      <AppContext.Provider value={this.openSignInWindow}>
+      <AppContext.Provider value={this.openModal}>
         <Layout>
           <Switch>
             <Wrapper>
-              <Modal show={show} modalClosed={this.closeSignInWindow}>
-                <Register />
+              <Modal
+                show={showRegister || showLogin}
+                modalClosed={this.closeModal}
+              >
+                {showLogin ? <Login /> : null}
+                {showRegister ? <Register /> : null}
               </Modal>
               <Route path="/" exact component={StartPage} />
               <Route path="/rules" exact component={Rules} />

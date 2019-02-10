@@ -7,7 +7,9 @@
     "start": "webpack-dev-server --config ./webpack.config.js --mode development --open",
     "test": "jest ./src --watchAll",
     "build": "webpack",
-    "server": "nodemon server"
+    "server": "npm start --prefix server",
+    "client": "webpack-dev-server --config ./webpack.config.js --mode development --open",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "repository": {
     "type": "git",
@@ -38,7 +40,7 @@
     "html-webpack-plugin": "^3.2.0",
     "image-webpack-loader": "^4.6.0",
     "jest": "^24.0.0",
-    "nodemon": "^1.18.9",
+    "nodemon": "^1.18.10",
     "prettier": "^1.16.4",
     "react-hot-loader": "^4.6.5",
     "style-loader": "^0.23.1",
@@ -61,5 +63,6 @@
   },
   "prettier": {
     "singleQuote": true
-  }
+  },
+  "proxy": "http://localhost:5000"
 }
