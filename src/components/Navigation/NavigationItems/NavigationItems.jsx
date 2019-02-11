@@ -18,6 +18,8 @@ class NavigationItems extends Component {
         <NavigationItem path="/" name="Home" />
         <NavigationItem path="/rules" name="Game rules" />
         <NavigationItem path="/stats" name="Stats" />
+        {/* Delete before merging */}
+        <NavigationItem path="/games" name="Games" />
         <button
           style={{ marginRight: '40px' }}
           type="button"
