@@ -19,12 +19,10 @@ class MessageField extends Component {
     messages.scrollTop = messages.scrollHeight + 100;
 
     new SimpleBar(document.getElementById('message_wrapper'));
-  }
 
-  // componentDidUpdate() {
-  //   const messages = document.getElementById('message_wrapper');
-  //   messages.scrollTop = messages.scrollHeight;
-  // }
+    const el = new SimpleBar(document.getElementById('message_wrapper'));
+    el.getScrollElement().scrollTop = messages.scrollHeight + 100;
+  }
 
   render() {
     return (
