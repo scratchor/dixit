@@ -3,11 +3,7 @@ import Wrapper from './StartButtonStyled';
 
 class StartButton extends Component {
   render() {
-    return (
-      <Wrapper>
-        START!
-      </Wrapper>
-    );
+    return <Wrapper>START!</Wrapper>;
   }
 }
 

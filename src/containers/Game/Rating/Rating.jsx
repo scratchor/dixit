@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import Wrapper from './RatingStyled';
 
 import PlayerInfo from './Container/PlayerInfo';
-import StartButton from './Container/StartButton'
+import StartButton from './Container/StartButton';
 
 class Rating extends Component {
   render() {
     return (
       <Wrapper>
-        <div>Hello from Rating!</div>
-        <StartButton/>
+        <StartButton />
         <PlayerInfo />
         <PlayerInfo />
         <PlayerInfo />

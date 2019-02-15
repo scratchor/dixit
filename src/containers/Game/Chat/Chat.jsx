@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import Wrapper from './ChatStyled';
+import SendField from './Container/SendField';
+import MessageField from './Container/MessageField';
 
 class Chat extends Component {
   render() {
     return (
       <Wrapper>
-        <div>Hello from Chat!</div>
+        <MessageField />
+        <SendField />
       </Wrapper>
     );
   }

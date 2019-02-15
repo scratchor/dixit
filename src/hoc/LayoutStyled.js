@@ -5,7 +5,7 @@ const GlobalStyle = createGlobalStyle`
   ${reset}
   {
     display: flex;
-    flex-direction: column;    
+    flex-direction: column;        
   }
 `;
 
