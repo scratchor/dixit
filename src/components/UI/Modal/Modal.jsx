@@ -5,6 +5,10 @@ import Wrapper from './ModalStyled';
 import Backdrop from '../Backdrop/Backdrop';
 
 const modal = ({ show, modalClosed, children }) => {
+  modal.defaultProps = {
+    children: null
+  };
+
   return (
     <>
       <Backdrop show={show} clicked={modalClosed} />
@@ -16,7 +20,7 @@ const modal = ({ show, modalClosed, children }) => {
 modal.propTypes = {
   show: PropTypes.bool.isRequired,
   modalClosed: PropTypes.func.isRequired,
-  children: PropTypes.element.isRequired
+  children: PropTypes.element
 };
 
 export default modal;

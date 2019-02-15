@@ -1,28 +1,21 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import GlobalStyle from './LayoutStyled';
 import Header from '../components/Navigation/Header/Header';
 
-class Layout extends Component {
-  componentDidMount() {
-    console.log(`[Layout] componentDidMount()`);
-  }
+const layout = ({ children }) => {
+  return (
+    <>
+      <GlobalStyle />
+      <Header />
+      <div>{children}</div>
+    </>
+  );
+};
 
-  render() {
-    const { children } = this.props;
-    return (
-      <>
-        <GlobalStyle />
-        <Header />
-        <div>{children}</div>
-      </>
-    );
-  }
-}
-
-Layout.propTypes = {
+layout.propTypes = {
   children: PropTypes.element.isRequired
 };
 
-export default Layout;
+export default layout;

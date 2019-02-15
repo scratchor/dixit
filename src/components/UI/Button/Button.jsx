@@ -2,18 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Wrapper from './ButtonStyled';
-import { AppContext } from '../../../App';
 
-const button = ({ name }) => {
-  return (
-    <AppContext>
-      {context => <Wrapper onClick={() => context(name)}>{name}</Wrapper>}
-    </AppContext>
-  );
+const button = ({ clicked, name }) => {
+  return <Wrapper onClick={clicked}>{name}</Wrapper>;
 };
 
 button.propTypes = {
-  name: PropTypes.string.isRequired
+  name: PropTypes.string.isRequired,
+  clicked: PropTypes.func.isRequired
 };
 
 export default button;

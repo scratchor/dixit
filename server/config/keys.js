@@ -1,5 +1,5 @@
 module.exports = {
   mongoURI:
-    'mongodb+srv://codeInSack:IecpOO4QsyFzbRNq@cluster0-lyzoh.mongodb.net/devconnector',
+    'mongodb+srv://dixit:7fIVhduBOaeqcyQ3@dixit-c8bmt.mongodb.net/dixit',
   secretOrKey: 'secret'
 };

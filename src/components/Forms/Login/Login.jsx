@@ -1,13 +1,34 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import * as AuthActions from '../../../actions/authActions';
+import * as ModalActions from '../../../actions/modalActions';
 
-import axios from 'axios';
-import { List, Button } from './LoginStyled';
+import Wrapper from './LoginStyled';
 
 class Login extends Component {
   state = {
     email: '',
-    password: ''
+    password: '',
+    errors: {}
   };
+
+  componentWillReceiveProps(nextProps) {
+    const {
+      hideModal,
+      history: { push }
+    } = this.props;
+
+    if (nextProps.auth.isAuthenticated) {
+      hideModal();
+      push('/protected');
+    }
+
+    if (nextProps.errors) {
+      this.setState({ errors: nextProps.errors });
+    }
+  }
 
   onChange = e => {
     this.setState({ [e.target.name]: e.target.value });
@@ -15,49 +36,71 @@ class Login extends Component {
 
   onSubmit = e => {
     const { email, password } = this.state;
+    const { loginUser } = this.props;
 
     e.preventDefault();
 
-    const user = {
+    const userData = {
       email,
       password
     };
 
-    axios
-      .post('http://localhost:5000/api/users/login', user)
-      .then(response => {
-        console.log(response.data);
-        axios.defaults.headers.common.Authorization = response.data.token;
-        // axios
-        //   .get('http://localhost:5000/api/users/current', {
-        //     Authorization: response.data.token
-        //   })
-        //   .then(authUser => console.log(authUser))
-        //   .catch(error => console.log(error));
-      })
-      .catch(err => console.log(err.response.data));
+    loginUser(userData);
   };
 
   render() {
+    const { errors } = this.state;
+
     return (
-      <List onSubmit={this.onSubmit}>
-        <h3>Login</h3>
-        <input
-          type="text"
-          name="email"
-          placeholder="Mail"
-          onChange={this.onChange}
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          onChange={this.onChange}
-        />
-        <Button type="submit">Submit</Button>
-      </List>
+      <Wrapper onSubmit={this.onSubmit}>
+        <label>
+          Email
+          <input
+            type="text"
+            name="email"
+            placeholder="Email"
+            onChange={this.onChange}
+          />
+        </label>
+        <p>{errors.email}</p>
+        <label>
+          Password
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            onChange={this.onChange}
+          />
+        </label>
+        <p>{errors.password}</p>
+        <button type="submit">Log in</button>
+      </Wrapper>
     );
   }
 }
 
-export default Login;
+Login.propTypes = {
+  loginUser: PropTypes.func.isRequired,
+  hideModal: PropTypes.func.isRequired,
+  auth: PropTypes.shape({
+    isAuthenticated: PropTypes.bool
+  }).isRequired,
+  history: PropTypes.shape({
+    action: PropTypes.string
+  }).isRequired,
+  errors: PropTypes.shape({
+    action: PropTypes.string
+  }).isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    { loginUser: AuthActions.loginUser, hideModal: ModalActions.hideModal }
+  )(Login)
+);
