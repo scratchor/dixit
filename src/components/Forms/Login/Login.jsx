@@ -22,7 +22,7 @@ class Login extends Component {
 
     if (nextProps.auth.isAuthenticated) {
       hideModal();
-      push('/protected');
+      push('/games');
     }
 
     if (nextProps.errors) {

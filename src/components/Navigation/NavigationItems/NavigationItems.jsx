@@ -42,7 +42,7 @@ class NavigationItems extends Component {
         <NavigationItem path="/" exact name="Home" />
         <NavigationItem path="/rules" name="Game rules" />
         <NavigationItem path="/stats" name="Stats" />
-        <NavigationItem path="/protected" name="Protected" />
+        <NavigationItem path="/games" name="Game" />
         {isAuthenticated ? authLinks : guestLinks}
       </Wrapper>
     );

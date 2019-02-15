@@ -6,7 +6,7 @@ const Wrapper = styled.div`
   align-items: center;
   background-color: #000;
   color: white;
-  height: 50px;
+  height: 6vh;
 `;
 
 export default Wrapper;

@@ -18,7 +18,8 @@
       "required": {
         "some": [ "nesting", "id"  ]
       }
-    }]
+    }],
+    "no-shadow": "warn"
   },
   "env": {
     "browser": true,

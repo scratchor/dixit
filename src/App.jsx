@@ -12,12 +12,12 @@ import Layout from './hoc/Layout';
 import StartPage from './containers/StartPage/StartPage';
 import Rules from './containers/Rules/Rules';
 import Stats from './containers/Stats/Stats';
-import Protect from './containers/Protected/Protect';
 import Modal from './components/UI/Modal/Modal';
 import Register from './components/Forms/Register/Register';
 import Login from './components/Forms/Login/Login';
 import store from './store';
 import PrivateRoute from './hoc/PrivateRoute';
+import Games from './containers/Game/Game';
 
 const mapStateToProps = state => ({
   modal: state.modal,
@@ -77,8 +77,8 @@ class App extends Component {
               <Route path="/rules" component={Rules} />
               <Route path="/stats" component={Stats} />
               <PrivateRoute
-                path="/protected"
-                component={Protect}
+                path="/games"
+                component={Games}
                 protect={isAuthenticated}
               />
             </Switch>
