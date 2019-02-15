@@ -8,6 +8,17 @@
   "rules": {
     "linebreak-style": ["error", "windows"],
     "prettier/prettier": ["error", { "singleQuote": true }],
+    "no-underscore-dangle": ["error", { "allow": ["__REDUX_DEVTOOLS_EXTENSION__"] }],
+    "jsx-a11y/label-has-associated-control": [ "error", {
+      "required": {
+        "some": [ "nesting", "id"  ]
+      }
+    }],
+    "jsx-a11y/label-has-for": [ "error", {
+      "required": {
+        "some": [ "nesting", "id"  ]
+      }
+    }],
     "no-shadow": "warn"
   },
   "env": {

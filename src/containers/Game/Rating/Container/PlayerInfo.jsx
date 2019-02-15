@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Wrapper from './PlayerInfoStyled';
 
-import Score from './Components/score';
+import Score from './Components/Score';
 import PlayerNameStat from './Components/PlayerNameStat';
 import Avatar from './Components/Avatar';
 

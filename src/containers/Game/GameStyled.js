@@ -21,7 +21,7 @@ const Wrapper = styled.div`
     right: 0;
     position: absolute;
     z-index: -1;
-  }
+  
 `;
 
 export default Wrapper;
