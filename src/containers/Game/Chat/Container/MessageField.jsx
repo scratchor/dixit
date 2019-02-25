@@ -3,8 +3,13 @@ import SimpleBar from 'simplebar';
 import 'simplebar/dist/simplebar.css';
 import Wrapper from './MessageFieldStyled';
 import Input from './MessageFieldComponent/Input';
+import Message from './MessageFieldComponent/Message';
 
 class MessageField extends Component {
+  state = {
+    message: {}
+  };
+
   componentDidMount() {
     const textarea = document.querySelector('textarea');
     textarea.addEventListener('keydown', autosize);
@@ -29,16 +34,11 @@ class MessageField extends Component {
       <Wrapper>
         <div id="message_wrapper">
           <div className="messages">
-            <div className="hey" />
-            <div className="hey" />
-            <div className="hey" />
-            <div className="hey" />
-            <div className="hey" />
-            <div className="hey" />
-            <div className="hey" />
-            <div className="hey" />
-            <div className="hey" />
-            <div className="hey" />
+            <Message />
+            <Message />
+            <Message />
+            <Message />
+            <Message />
           </div>
         </div>
         <Input />

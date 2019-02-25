@@ -7,6 +7,7 @@
   ],
   "rules": {
     "linebreak-style": ["error", "windows"],
+    "no-case-declarations": "off",
     "prettier/prettier": ["error", { "singleQuote": true }],
     "no-underscore-dangle": ["error", { "allow": ["__REDUX_DEVTOOLS_EXTENSION__"] }],
     "jsx-a11y/label-has-associated-control": [ "error", {
@@ -19,7 +20,7 @@
         "some": [ "nesting", "id"  ]
       }
     }],
-    "no-shadow": "warn"
+    "no-shadow": "off"
   },
   "env": {
     "browser": true,

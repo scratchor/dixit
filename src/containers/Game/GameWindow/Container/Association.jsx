@@ -16,7 +16,7 @@ class Association extends Component {
 
   render() {
     const { user } = this.state;
-    console.log(user);
+
     return (
       <Wrapper>
         <InfoInputFiled props={user} />

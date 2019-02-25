@@ -45,6 +45,7 @@ const Wrapper = styled.div`
       content: 'GO!';
       font-size: 2vw;
     }
+    z-index: 2;
   }
   .button:hover {
     background: #e9ff00;
@@ -62,6 +63,7 @@ const Wrapper = styled.div`
     width: 75%;
     height: 85%;
   }
+
   .frills,
   .frills:after,
   .frills:before {

@@ -30,6 +30,9 @@ class AvatarButton extends Component {
 }
 
 AvatarButton.propTypes = {
-  props: PropTypes.objectOf(PropTypes.bool).isRequired
+  props: PropTypes.shape({
+    url: PropTypes.string.isRequired,
+    master: PropTypes.bool.isRequired
+  }).isRequired
 };
 export default AvatarButton;

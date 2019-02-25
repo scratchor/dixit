@@ -4,10 +4,10 @@ const Wrapper = styled.div`
   background-color: red;
   width: 100%;
   box-sizing: border-box;
-  margin: 0.5vh auto 1.5vh auto;
+  margin: 0.5vh auto 1vh auto;
   height: 83vh;
   text-align: center;
-  overflow: auto;  
+  overflow: auto;
 
   .hey {
     width: 100%;
@@ -20,7 +20,7 @@ const Wrapper = styled.div`
     height: auto;
     width: 90%;
     text-align: center;
-    margin: 0 auto 8vh auto;
+    margin: 0 auto 11vh auto;
   }
 `;
 

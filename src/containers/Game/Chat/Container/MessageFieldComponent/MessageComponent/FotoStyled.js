@@ -1,18 +1,15 @@
 import styled from 'styled-components';
-
+// background-image: url(${props => props.imgObj.url});
 const Wrapper = styled.div`
   font-weight: bold;
-  background-image: url(${props => props.imgObj.url});
   background-size: cover;
   background-position: 50% 50%;
-  height: 80%;
-  //height: 5vh;
+  background-color: black;
+  height: 4vh;
   float: left;
-  width: 22%;
-  //width: 5vh;
+  width: 4vh;
   box-sizing: border-box;
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
+  border-radius: 100px;
 `;
+
 export default Wrapper;

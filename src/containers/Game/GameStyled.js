@@ -7,6 +7,7 @@ const Wrapper = styled.div`
   width: 100%;
   height: 94vh;
   min-width: 800px;
+  //min-height: 100vw;
 
   ${Wrapper}::after {
     content: '';

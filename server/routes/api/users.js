@@ -10,7 +10,7 @@ const keys = require('../../config/keys');
 const validateRegisterInput = require('../../validation/register');
 const validateLoginInput = require('../../validation/login');
 
-const User = require('../../models/User');
+const User = require('../../databases/mongo/models/User');
 
 router.get('/test', (req, res) => res.json({ msg: 'Users Works' }));
 
@@ -78,7 +78,8 @@ router.post('/login', (req, res) => {
           (err, token) => {
             res.json({
               success: true,
-              token: `Bearer ${token}`
+              //token: `Bearer ${token}`
+              token: `${token}`
             });
           }
         );
