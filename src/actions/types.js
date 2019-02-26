@@ -10,3 +10,4 @@ export const SOCKET_ERROR = 'SOCKET_ERROR';
 export const ADD_PLAYER = 'ADD_PLAYER';
 export const ADD_PLAYER_OLD_STATUS = 'ADD_PLAYER_OLD_STATUS';
 export const DELETE_PLAYER = 'DELETE_PLAYER';
+export const MAKE_MASTER = 'MAKE_MASTER';

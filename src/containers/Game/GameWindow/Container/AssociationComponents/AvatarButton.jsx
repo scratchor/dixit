@@ -3,14 +3,25 @@ import PropTypes from 'prop-types';
 import Wrapper from './AvatarButtonStyled';
 
 class AvatarButton extends Component {
-  componentDidMount() {
-    const elem = document.querySelector('.fancy-button');
-    elem.addEventListener('mousedown', () => {
-      elem.addEventListener('animationend', () => {
-        elem.classList.remove('active');
+  static defaultProps = {
+    props: PropTypes.shape({
+      url: 'sdfsdfsdf',
+      master: false
+    })
+  };
+
+  componentDidUpdate() {
+    const { props } = this.props;
+    const { master } = props;
+    if (master) {
+      const elem = document.querySelector('.fancy-button');
+      elem.addEventListener('mousedown', () => {
+        elem.addEventListener('animationend', () => {
+          elem.classList.remove('active');
+        });
+        elem.classList.add('active');
       });
-      elem.classList.add('active');
-    });
+    }
   }
 
   render() {
@@ -31,8 +42,9 @@ class AvatarButton extends Component {
 
 AvatarButton.propTypes = {
   props: PropTypes.shape({
-    url: PropTypes.string.isRequired,
+    url: PropTypes.string,
     master: PropTypes.bool.isRequired
-  }).isRequired
+  })
 };
+
 export default AvatarButton;

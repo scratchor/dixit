@@ -1,37 +1,7 @@
 const client = require('../databases/redis/client');
-const roomArrays = require('./socket').roomArrays;
-
-// const sendJoinRoomInfo =  (socket, room) => {
-//   let avatar1;
-//   let name1;
-//  client.lrange(`avatar${room.split('')[4]}`, 0, -1, async (err, avatar) => {
-//
-//     const func = () => {
-//     await  avatar1 = avatar;
-//       console.log('sendJoinRoomInfo avatar');
-//     };
-//      func();
-//     client.lrange(`username${room.split('')[4]}`, 0, -1,  (err, name) => {
-//
-//        const func = () => {
-//          name1 = name;
-//          console.log('sendJoinRoomInfo username');
-//        };
-//         func();
-//     return socket.emit('value', {
-//         type: 'ADD_PLAYER',
-//         avatar: avatar1,
-//         username: name1
-//       });
-//     });
-//   });
-// };
 
 const sendJoinRoomInfo = (socket, room) =>
   new Promise(res => {
-    // const send = (socket, room) => {
-
-    // new Promise((res, rej) => {
     client.lrange(`avatar${room.split('')[4]}`, 0, -1, (err, avatar) => {
       console.log('sendJoinRoomInfo avatar');
       client.lrange(`username${room.split('')[4]}`, 0, -1, (err, username) => {
@@ -39,27 +9,39 @@ const sendJoinRoomInfo = (socket, room) =>
         // eslint-disable-next-line prettier/prettier
         client.lrange(`socketsId${room.split('')[4]}`, 0, -1, (err, socketsId) => {
             console.log('sendJoinRoomInfo socketsId');
-            socket.emit('action', {
-              type: 'ADD_PLAYER_OLD_STATUS',
-              avatar,
-              username,
-              socketsId
-            });
-            res();
+            // eslint-disable-next-line prettier/prettier
+          client.get(`playersNumber${room.split('')[4]}`, (err, playersNumber) => {
+                console.log('sendJoinRoomInfo playersNumber', playersNumber);
+                if (playersNumber === '0') {
+                  socket.emit('action', {
+                    type: 'MAKE_MASTER',
+                    master: true
+                  });
+                }
+                socket.emit('action', {
+                  type: 'ADD_PLAYER_OLD_STATUS',
+                  avatar,
+                  username,
+                  socketsId
+                });
+                res();
+              }
+            );
           }
         );
       });
     });
   });
-// });
-// res()
-
-// //}
 
 const writeJoinRoomSocketInfo = (user, room, socket) => {
   client.rpush(`avatar${room.split('')[4]}`, `${user.avatar}`);
   client.rpush(`username${room.split('')[4]}`, `${user.name}`);
   client.rpush(`socketsId${room.split('')[4]}`, `${socket.id}`);
+  client.get(`playersNumber${room.split('')[4]}`, (err, playersNumber) => {
+    console.log(playersNumber);
+    const newPlayersNumber = +playersNumber + 1;
+    client.set(`playersNumber${room.split('')[4]}`, newPlayersNumber);
+  });
   console.log('writeJoinRoomSocketInfo');
   client.lrange(`avatar${room.split('')[4]}`, 0, -1, (err, value) => {
     console.log(value);
@@ -69,7 +51,7 @@ const writeJoinRoomSocketInfo = (user, room, socket) => {
   });
 };
 
-const deleteFromDatabase = (socketRoom, user, socket, roomArrays) => {
+const deleteFromDatabase = (socketRoom, socket, roomArrays, io) => {
   console.log('Disconnecting - deleting the socket from the database!');
 
   new Promise(res => {
@@ -81,13 +63,30 @@ const deleteFromDatabase = (socketRoom, user, socket, roomArrays) => {
   })
     .then(value => {
       const i = value.indexOf(socket.id);
+      if (i === 0 && value[1]) {
+        io.to(`${value[1]}`).emit('action', {
+          type: 'MAKE_MASTER',
+          master: true
+        });
+      }
       return i;
     })
     .then(i => {
       console.log(i);
+      client.get(
+        `playersNumber${socketRoom.split('')[4]}`,
+        (err, playersNumber) => {
+          const newPlayersNumber = +playersNumber - 1;
+          client.set(
+            `playersNumber${socketRoom.split('')[4]}`,
+            newPlayersNumber
+          );
+        }
+      );
       roomArrays.forEach(e => {
         client.lset(e, i, 'delete', () => {
           client.lrem(e, 1, 'delete', () => {
+            // console.log after the last list
             if (e === 'socketsId1') {
               // eslint-disable-next-line prettier/prettier
               client.lrange(`avatar${socketRoom.split('')[4]}`, 0, -1, (err, value) => {
@@ -103,6 +102,11 @@ const deleteFromDatabase = (socketRoom, user, socket, roomArrays) => {
 
               // eslint-disable-next-line prettier/prettier
               client.lrange(`socketsId${socketRoom.split('')[4]}`, 0, -1, (err, value) => {
+                  console.log(value);
+                }
+              );
+              // eslint-disable-next-line prettier/prettier
+              client.get(`playersNumber${socketRoom.split('')[4]}`, (err, value) => {
                   console.log(value);
                 }
               );

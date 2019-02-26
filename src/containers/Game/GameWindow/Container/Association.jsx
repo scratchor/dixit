@@ -1,22 +1,21 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import Wrapper from './AssosiationStyled';
 import InfoInputFiled from './AssociationComponents/InfoInputFiled';
 import AvatarButton from './AssociationComponents/AvatarButton';
 import Name from './AssociationComponents/Name';
-import Avatar from '../../Rating/Container/PlayerInfo';
 
 class Association extends Component {
-  state = {
-    user: {
-      master: true,
-      url:
-        'http://www.qwesa.ru/wp-content/uploads/2013/06/chto-takoe-smajlik-qwesa.ru-02.jpg'
-    }
-  };
-
   render() {
-    const { user } = this.state;
-
+    const user = {};
+    const { players } = this.props;
+    const { master } = players;
+    const url =
+      players.avatar[0] ||
+      'http://zabavnik.club/wp-content/uploads/Kartinki_pro_smaylik-ulybka_1_05172441.jpg';
+    user.master = master;
+    user.url = url;
     return (
       <Wrapper>
         <InfoInputFiled props={user} />
@@ -27,4 +26,17 @@ class Association extends Component {
   }
 }
 
-export default Association;
+Association.propTypes = {
+  players: PropTypes.PropTypes.shape({
+    avatar: PropTypes.array,
+    master: PropTypes.bool
+  }).isRequired
+};
+
+const mapStateToProps = state => {
+  return {
+    players: state.ratingReducer.players
+  };
+};
+
+export default connect(mapStateToProps)(Association);

@@ -44,41 +44,44 @@ const jwtAuthSocket = bool => {
   );
 };
 
+// initial prepare
 const rooms = ['game1'];
+
+client.del('avatar1');
+client.del('username1');
+client.del('socketsId1');
+client.del('playersNumber1');
+
 const roomArrays = [
   `avatar${rooms[0].split('')[4]}`,
   `username${rooms[0].split('')[4]}`,
   `socketsId${rooms[0].split('')[4]}`
 ];
-
-client.del('avatar1');
-client.del('username1');
-client.del('socketsId1');
+client.set(`playersNumber${rooms[0].split('')[4]}`, 0);
 
 const socketConnect = io => {
   io.on('connection', socket => {
     // now you can access user info through socket.request.user
     // socket.request.user.logged_in will be set to true if the user was authenticated
     let { user } = socket.request;
+    // room name for current scope
     let socketRoom;
+    // number of players in the room
 
     socket.on('joinRoom', async room => {
       if (rooms.includes(room)) {
-        socket.join(room, () => {
-          const rooms = Object.keys(socket.rooms);
-          console.log(rooms);
-        });
+        socket.join(room);
         socketRoom = room;
-        await sendJoinRoomInfo(socket, room);
 
+        await sendJoinRoomInfo(socket, room);
         await io.in(room).emit('action', {
           type: 'ADD_PLAYER',
           avatar: user.avatar,
           username: user.name,
           socketsId: socket.id
         });
-
         await writeJoinRoomSocketInfo(user, room, socket);
+
         socket.to(room).emit('newUser', {
           message: `New player has joined to the room ${room}`
         });
@@ -150,12 +153,14 @@ const socketConnect = io => {
           type: 'DELETE_PLAYER',
           socketId: socket.id
         });
-        deleteFromDatabase(socketRoom, user, socket, roomArrays);
+        deleteFromDatabase(socketRoom, socket, roomArrays, io);
       }
     });
 
     socket.on('disconnect', function() {
       console.log('user disconnected');
+      // number of all connetion
+      //console.log(io.engine.clientsCount);
     });
   });
 };

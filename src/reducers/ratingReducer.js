@@ -1,26 +1,30 @@
 import {
   ADD_PLAYER,
   ADD_PLAYER_OLD_STATUS,
-  DELETE_PLAYER
+  DELETE_PLAYER,
+  MAKE_MASTER
 } from '../actions/types';
 
 const initialState = {
   players: {
     playersNumber: 0,
     avatar: [],
-    score: [],
+    // score: [],
     username: [],
-    status: [],
-    socketsId: []
+    // status: [],
+    socketsId: [],
+    master: false
   }
 };
 
 export default function(state = initialState, action) {
   let players;
   switch (action.type) {
-    case ADD_PLAYER:
+    // eslint-disable-next-line prettier/prettier
+    case ADD_PLAYER:                                                            // ADD_PLAYER
       console.log('ADD_PLAYER', action);
       players = {
+        ...state.players,
         playersNumber: state.players.playersNumber + 1,
         avatar: [...state.players.avatar, action.avatar],
         // score: [...state.players.score, action.score],
@@ -32,12 +36,14 @@ export default function(state = initialState, action) {
         ...state,
         players
       };
-    case ADD_PLAYER_OLD_STATUS:
+    // eslint-disable-next-line prettier/prettier
+    case ADD_PLAYER_OLD_STATUS:                                              // ADD_PLAYER_OLD_STATUS
       console.log('ADD_PLAYER_OLD_STATUS', action);
       if (action.avatar.length === 0) {
         return state;
       }
       players = {
+        ...state.players,
         playersNumber: action.avatar.length,
         avatar: [...state.players.avatar, ...action.avatar],
         // score: [...state.players.score, action.score],
@@ -49,20 +55,17 @@ export default function(state = initialState, action) {
         ...state,
         players
       };
-    case DELETE_PLAYER:
+    // eslint-disable-next-line prettier/prettier
+    case DELETE_PLAYER:                                                           // DELETE_PLAYER
       console.log('DELETE_PLAYER', action);
       const i = state.players.socketsId.indexOf(action.socketId);
-      // eslint-disable-next-line prefer-destructuring
       const newPlayers = state.players;
       Object.values(newPlayers).forEach(e =>
         Array.isArray(e) ? e.splice(i, 1) : false
       );
-      // players.playersNumber = state.players.playersNumber - 1;
-      // newplayers.avatar.splice(i, 1);
-      // newplayers.username.splice(i, 1);
-      // newplayers.socketsId.splice(i, 1);
 
       players = {
+        ...state.players,
         playersNumber: state.players.playersNumber - 1,
         avatar: newPlayers.avatar,
         // score: [...state.players.score, action.score],
@@ -71,6 +74,17 @@ export default function(state = initialState, action) {
         socketsId: newPlayers.socketsId
       };
       console.log('DELETE_PLAYER', players);
+      return {
+        ...state,
+        players
+      };
+    // eslint-disable-next-line prettier/prettier
+    case MAKE_MASTER:                                                         // MAKE_MASTER
+      console.log('MAKE_MASTER', action);
+      players = {
+        ...state.players,
+        master: true
+      };
       return {
         ...state,
         players
