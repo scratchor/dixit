@@ -5,6 +5,7 @@ import modalReducer from './modalReducer';
 import avatarRatingReducer from './avatarRatingReducer';
 import socketReducer from './socketReducer';
 import ratingReducer from './ratingReducer';
+import infoReducer from './infoReducer';
 
 export default combineReducers({
   auth: authReducer,
@@ -12,5 +13,6 @@ export default combineReducers({
   modal: modalReducer,
   avatarRating: avatarRatingReducer,
   socketReducer,
-  ratingReducer
+  ratingReducer,
+  infoReducer
 });

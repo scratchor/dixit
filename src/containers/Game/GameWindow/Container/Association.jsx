@@ -4,23 +4,27 @@ import PropTypes from 'prop-types';
 import Wrapper from './AssosiationStyled';
 import InfoInputFiled from './AssociationComponents/InfoInputFiled';
 import AvatarButton from './AssociationComponents/AvatarButton';
-import Name from './AssociationComponents/Name';
+import ThinkTime from './AssociationComponents/ThinkTime';
 
 class Association extends Component {
   render() {
     const user = {};
     const { players } = this.props;
-    const { master } = players;
+    const { master, masterMadeStep, association, username } = players;
+    const name = username[0];
     const url =
       players.avatar[0] ||
       'http://zabavnik.club/wp-content/uploads/Kartinki_pro_smaylik-ulybka_1_05172441.jpg';
     user.master = master;
     user.url = url;
+    user.masterMadeStep = masterMadeStep;
+    user.association = association;
+    user.name = name;
     return (
       <Wrapper>
         <InfoInputFiled props={user} />
         <AvatarButton props={user} />
-        {/* <Name /> */}
+        <ThinkTime />
       </Wrapper>
     );
   }

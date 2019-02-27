@@ -51,14 +51,16 @@ client.del('avatar1');
 client.del('username1');
 client.del('socketsId1');
 client.del('playersNumber1');
+client.del('associations1');
 
 const roomArrays = [
   `avatar${rooms[0].split('')[4]}`,
   `username${rooms[0].split('')[4]}`,
-  `socketsId${rooms[0].split('')[4]}`
+  `socketsId${rooms[0].split('')[4]}`,
+  `associations${rooms[0].split('')[4]}`
 ];
 client.set(`playersNumber${rooms[0].split('')[4]}`, 0);
-
+let playersNumber = 0;
 const socketConnect = io => {
   io.on('connection', socket => {
     // now you can access user info through socket.request.user
@@ -69,7 +71,9 @@ const socketConnect = io => {
     // number of players in the room
 
     socket.on('joinRoom', async room => {
-      if (rooms.includes(room)) {
+      if (rooms.includes(room) && playersNumber < 10) {
+        playersNumber += 1;
+        console.log('playersNumber', playersNumber);
         socket.join(room);
         socketRoom = room;
 
@@ -133,6 +137,23 @@ const socketConnect = io => {
             });
           }
           break;
+        case 'INFO_ABOUT_START':
+          return socket.to(socketRoom).emit('action', {
+            type: 'INFO_ABOUT_START',
+            message: action.message
+          });
+        case 'REPORT_ASSOCIATION':
+          // eslint-disable-next-line prettier/prettier
+          client.rpush(`associations${socketRoom.split('')[4]}`, `${action.association}`);
+          // eslint-disable-next-line prettier/prettier
+          client.lrange(`associations${socketRoom.split('')[4]}`, 0, -1, (err, value) => {
+              console.log(value);
+            }
+          );
+          return io.in(socketRoom).emit('action', {
+            type: 'REPORT_ASSOCIATION',
+            association: action.association
+          });
         default:
       }
     });
@@ -153,6 +174,7 @@ const socketConnect = io => {
           type: 'DELETE_PLAYER',
           socketId: socket.id
         });
+        playersNumber -= 1;
         deleteFromDatabase(socketRoom, socket, roomArrays, io);
       }
     });
@@ -160,7 +182,7 @@ const socketConnect = io => {
     socket.on('disconnect', function() {
       console.log('user disconnected');
       // number of all connetion
-      //console.log(io.engine.clientsCount);
+      // console.log(io.engine.clientsCount);
     });
   });
 };

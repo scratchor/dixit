@@ -2,7 +2,9 @@ import {
   ADD_PLAYER,
   ADD_PLAYER_OLD_STATUS,
   DELETE_PLAYER,
-  MAKE_MASTER
+  MAKE_MASTER,
+  START_GAME,
+  REPORT_ASSOCIATION
 } from '../actions/types';
 
 const initialState = {
@@ -13,7 +15,10 @@ const initialState = {
     username: [],
     // status: [],
     socketsId: [],
-    master: false
+    master: false,
+    ifGameStarted: false,
+    masterMadeStep: false,
+    association: ''
   }
 };
 
@@ -56,7 +61,7 @@ export default function(state = initialState, action) {
         players
       };
     // eslint-disable-next-line prettier/prettier
-    case DELETE_PLAYER:                                                           // DELETE_PLAYER
+    case DELETE_PLAYER:                                                         // DELETE_PLAYER
       console.log('DELETE_PLAYER', action);
       const i = state.players.socketsId.indexOf(action.socketId);
       const newPlayers = state.players;
@@ -73,7 +78,6 @@ export default function(state = initialState, action) {
         // status: [...state.players.status, action.status],
         socketsId: newPlayers.socketsId
       };
-      console.log('DELETE_PLAYER', players);
       return {
         ...state,
         players
@@ -84,6 +88,29 @@ export default function(state = initialState, action) {
       players = {
         ...state.players,
         master: true
+      };
+      return {
+        ...state,
+        players
+      };
+    // eslint-disable-next-line prettier/prettier
+    case START_GAME:                                                            // START_GAME
+      console.log('START_GAME', action);
+      players = {
+        ...state.players,
+        ifGameStarted: action.ifGameStarted
+      };
+      return {
+        ...state,
+        players
+      };
+    // eslint-disable-next-line prettier/prettier
+    case REPORT_ASSOCIATION:                                                            // REPORT_ASSOCIATION
+      console.log('REPORT_ASSOCIATION', action);
+      players = {
+        ...state.players,
+        masterMadeStep: true,
+        association: action.association
       };
       return {
         ...state,

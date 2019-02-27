@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
-  width: 10%;
+  width: 25%;
   height: 100%;
   display: flex;
   flex-direction: row;
@@ -12,9 +12,26 @@ const Wrapper = styled.div`
     font-weight: bold;
     background-size: cover;
     background-position: 50% 50%;
-    height: 90%;
-    width: 80%;
+    height: 35px;
+    width: 35px;
     box-sizing: border-box;
+    border-radius: 50%;
+    margin: 0 auto;
+    margin-top: 5%;
+  }
+
+  .name {
+    height: 20%;
+    width: 100%;
+    margin-top: 4%;
+    display: block;
+  }
+
+  .avatarName {
+    height: 100%;
+    width: 90%;
+
+    text-align: center;
   }
 
   .button:active {
@@ -60,8 +77,8 @@ const Wrapper = styled.div`
   .fancy-button {
     margin: auto;
     position: relative;
-    width: 75%;
-    height: 85%;
+    width: 50px;
+    height: 50px;
   }
 
   .frills,

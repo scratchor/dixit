@@ -8,11 +8,12 @@ const Wrapper = styled.div`
   height: 80%;
   //height: 5vh;
   float: left;
-  width: 22%;
+  width: 18%;
   //width: 5vh;
   box-sizing: border-box;
   position: relative;
   top: 50%;
   transform: translateY(-50%);
+  border-radius: 50%;
 `;
 export default Wrapper;

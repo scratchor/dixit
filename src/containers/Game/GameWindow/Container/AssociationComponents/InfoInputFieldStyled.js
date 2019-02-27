@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
-  width: 40%;
+  width: 50%;
   height: 100%;
   box-sizing: border-box;
   text-align: center;
@@ -15,7 +15,7 @@ const Wrapper = styled.div`
   }
   input {
     width: 100%;
-    text-align:center;
+    text-align: center;
   }
 `;
 

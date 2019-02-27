@@ -20,7 +20,8 @@
         "some": [ "nesting", "id"  ]
       }
     }],
-    "no-shadow": "off"
+    "no-shadow": "off",
+    "consistent-return": "off"
   },
   "env": {
     "browser": true,

@@ -5,9 +5,21 @@ import Wrapper from './RatingStyled';
 
 import PlayerInfo from './Container/PlayerInfo';
 import StartButton from './Container/StartButton';
-import avatar from './Container/Components/Avatar';
 
 class Rating extends Component {
+  componentDidUpdate() {
+    const { players } = this.props;
+    const { master, playersNumber, ifGameStarted } = players;
+    if (master && !ifGameStarted && playersNumber === 3) {
+      setTimeout(() => {
+        return alert(
+          'Hello! We already have free players in the room! And now you can start the game! ' +
+            'To start - click the button "START!" at the upper left corner of the screen!'
+        );
+      }, 1000);
+    }
+  }
+
   render() {
     const { players } = this.props;
     const playerInfoList = players.avatar.map((e, i) => {

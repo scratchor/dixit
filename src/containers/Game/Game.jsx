@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import io from 'socket.io-client';
 import Wrapper from './GameStyled';
 import Rating from './Rating/Rating';
 import GameWindow from './GameWindow/GameWindow';
 import Chat from './Chat/Chat';
-import getPlayerAvatar from '../../actions/avatarRating';
 import { socket } from '../../store';
 
 class Game extends Component {
