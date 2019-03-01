@@ -1,4 +1,5 @@
 const client = require('../databases/redis/client');
+let { permission } = require('../config/permission');
 
 const sendJoinRoomInfo = (socket, room) =>
   new Promise(res => {
@@ -52,11 +53,12 @@ const writeJoinRoomSocketInfo = (user, room, socket) => {
 };
 
 const deleteFromDatabase = (socketRoom, socket, roomArrays, io) => {
-  console.log('Disconnecting - deleting the socket from the database!');
+  permission = false;
+  console.log('Disconnecting - deleting the socket from the game database!');
 
   new Promise(res => {
     // eslint-disable-next-line prettier/prettier
-    client.lrange(`socketsId${socketRoom.split('')[4]}`, 0, -1, (err, value) => {
+      client.lrange(`socketsId${socketRoom.split('')[4]}`, 0, -1, (err, value) => {
         res(value);
       }
     );
@@ -88,25 +90,26 @@ const deleteFromDatabase = (socketRoom, socket, roomArrays, io) => {
           client.lrem(e, 1, 'delete', () => {
             // console.log after the last list
             if (e === 'socketsId1') {
+              permission = true;
               // eslint-disable-next-line prettier/prettier
-              client.lrange(`avatar${socketRoom.split('')[4]}`, 0, -1, (err, value) => {
+                client.lrange(`avatar${socketRoom.split('')[4]}`, 0, -1, (err, value) => {
                   console.log(value);
                 }
               );
 
               // eslint-disable-next-line prettier/prettier
-              client.lrange(`username${socketRoom.split('')[4]}`, 0, -1, (err, value) => {
+                client.lrange(`username${socketRoom.split('')[4]}`, 0, -1, (err, value) => {
                   console.log(value);
                 }
               );
 
               // eslint-disable-next-line prettier/prettier
-              client.lrange(`socketsId${socketRoom.split('')[4]}`, 0, -1, (err, value) => {
+                client.lrange(`socketsId${socketRoom.split('')[4]}`, 0, -1, (err, value) => {
                   console.log(value);
                 }
               );
               // eslint-disable-next-line prettier/prettier
-              client.get(`playersNumber${socketRoom.split('')[4]}`, (err, value) => {
+                client.get(`playersNumber${socketRoom.split('')[4]}`, (err, value) => {
                   console.log(value);
                 }
               );

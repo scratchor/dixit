@@ -1,0 +1,1 @@
+let { permission } = require('../config/permission');

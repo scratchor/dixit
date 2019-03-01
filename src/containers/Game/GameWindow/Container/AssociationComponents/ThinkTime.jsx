@@ -24,7 +24,7 @@ class ThinkTime extends Component {
       document.getElementById('timer').innerHTML = `${m}:${s}`;
       setTimeout(timer, 1000);
     }
-    timer();
+    //timer();
   }
 
   handleClick = () => {

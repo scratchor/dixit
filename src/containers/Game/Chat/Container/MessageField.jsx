@@ -11,15 +11,15 @@ class MessageField extends Component {
   };
 
   componentDidMount() {
-    const textarea = document.querySelector('textarea');
-    textarea.addEventListener('keydown', autosize);
-    function autosize() {
-      const el = this;
-      setTimeout(function() {
-        el.style.cssText = 'height: auto; padding:0';
-        el.style.cssText = `height:${el.scrollHeight}px`;
-      }, 0);
-    }
+    // const textarea = document.querySelector('textarea');
+    // textarea.addEventListener('keydown', autosize);
+    // function autosize() {
+    //   const el = this;
+    //   setTimeout(function() {
+    //     el.style.cssText = 'height: auto; padding:0';
+    //     el.style.cssText = `height:${el.scrollHeight}px`;
+    //   }, 0);
+    // }
     const messages = document.getElementById('message_wrapper');
     messages.scrollTop = messages.scrollHeight + 100;
 
@@ -34,6 +34,9 @@ class MessageField extends Component {
       <Wrapper>
         <div id="message_wrapper">
           <div className="messages">
+            <Message />
+            <Message />
+            <Message />
             <Message />
             <Message />
             <Message />

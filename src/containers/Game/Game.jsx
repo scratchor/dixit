@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import Wrapper from './GameStyled';
 import Rating from './Rating/Rating';
 import GameWindow from './GameWindow/GameWindow';
 import Chat from './Chat/Chat';
 import { socket } from '../../store';
+import deleteStatePlayers from '../../actions/deleteStatePlayers';
 
 class Game extends Component {
-  componentDidMount() {
+  componentWillMount() {
     const token = sessionStorage.getItem('jwtToken');
     socket.emit('action', {
       type: 'Authentication',
@@ -19,12 +21,29 @@ class Game extends Component {
     });
 
     socket.on('value', data => console.log(data));
-
+    let todo = true;
     socket.on('joinRoom', data => {
-      if (data.isAuthenticated) {
-        socket.emit('joinRoom', 'game1');
+      if (todo) {
+        todo = false;
+        // sdsddds
+        if (data.isAuthenticated) {
+          socket.emit('joinRoom', 'game1');
+        }
       }
     });
+  }
+
+  componentWillUpdate() {
+    console.log('componentWillUpdate');
+    socket.emit('disconnecting');
+    const { props } = this;
+    props.deleteStatePlayers();
+  }
+
+  componentWillUnmount() {
+    socket.emit('disconnecting');
+    const { props } = this;
+    props.deleteStatePlayers();
   }
 
   render() {
@@ -38,19 +57,23 @@ class Game extends Component {
   }
 }
 
+Game.propTypes = {
+  deleteStatePlayers: PropTypes.func.isRequired
+};
+
 const mapStateToProps = state => {
   return {
-    post: state.avatar
+    isAuthenticated: state.auth
   };
 };
 
-// const mapDispatchToProps = dispatch => {
-// //   return {
-// //     getPlayerAvatar: () => dispatch(getPlayerAvatar())
-// //   };
-// // };
+const mapDispatchToProps = dispatch => {
+  return {
+    deleteStatePlayers: () => dispatch(deleteStatePlayers())
+  };
+};
 
 export default connect(
-  mapStateToProps
-  // mapDispatchToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(Game);

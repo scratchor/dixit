@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const secret = require('../config/keys').secretOrKey;
 const User = require('../databases/mongo/models/User');
 const client = require('../databases/redis/client');
+const { permission } = require('../config/permission');
 
 const {
   sendJoinRoomInfo,
@@ -37,7 +38,7 @@ const jwtAuthSocket = bool => {
           return done(null, user);
         });
       } else {
-        console.log('Authentication Failed!!!');
+        console.log('Authentication Failed! You are enter as a guest!!!');
         return done(); // in your connection handler user.logged_in will be false
       }
     }
@@ -132,6 +133,7 @@ const socketConnect = io => {
                 user = data;
                 user.logged_in = true;
                 console.log(user);
+                console.log(socket.id);
                 return socket.emit('joinRoom', { isAuthenticated: true });
               });
             });
@@ -170,6 +172,7 @@ const socketConnect = io => {
         io.sockets.adapter.rooms[socketRoom] !== undefined &&
         io.sockets.adapter.rooms[socketRoom].sockets[socket.id]
       ) {
+        socket.leave(socketRoom);
         io.in(socketRoom).emit('action', {
           type: 'DELETE_PLAYER',
           socketId: socket.id

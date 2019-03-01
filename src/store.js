@@ -2,6 +2,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import io from 'socket.io-client';
 import socketIoMiddleware from 'redux-socket.io-middleware';
+import logger from 'redux-logger';
 
 import rootReducer from './reducers';
 
@@ -16,16 +17,16 @@ const socket = io('http://localhost:5000', {
 });
 
 // Connection failed
-socket.on('error', function(err) {
-  console.log(err);
-  throw new Error(err);
-});
+// socket.on('error', function(err) {
+//   console.log(err);
+//   throw new Error(err);
+// });
 // Connection succeeded
 socket.on('success', function(data) {
   console.log(data.message);
 });
 
-const middleware = [thunk, socketIoMiddleware(socket)];
+const middleware = [thunk, socketIoMiddleware(socket), logger];
 
 const store = createStore(
   rootReducer,
