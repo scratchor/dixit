@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
-  background-color: red;
   width: 100%;
   box-sizing: border-box;
   margin: 0.5vh auto 1vh auto;
@@ -19,6 +18,7 @@ const Wrapper = styled.div`
   .messages {
     height: auto;
     width: 90%;
+    //padding-bottom: 20vh;
     text-align: center;
     margin: 0 auto 11vh auto;
   }

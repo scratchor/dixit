@@ -11,7 +11,6 @@ const Wrapper = styled.div`
   overflow: hidden;
   display: flex;
   justify-content: center;
-  
 
   ${Wrapper}::after {
     content: '';
@@ -19,7 +18,7 @@ const Wrapper = styled.div`
     background-size: 113% 60vh;
     background-position: 50% 50%;
     background-repeat: no-repeat;
-    opacity: 0.6;
+    opacity: 0.9;
     top: 0;
     left: 0;
     bottom: 0;

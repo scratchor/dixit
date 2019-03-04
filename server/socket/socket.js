@@ -2,11 +2,15 @@ const jwtAuth = require('socketio-jwt-auth');
 const jwt = require('jsonwebtoken');
 const secret = require('../config/keys').secretOrKey;
 const User = require('../databases/mongo/models/User');
+const Cards = require('../databases/mongo/models/Cards');
 const client = require('../databases/redis/client');
-const { permission } = require('../config/permission');
+// const { permission } = require('../config/permission');
+// const joinRoom = require('../socket/onJoinRoom');
+global.permission = true;
 
 const {
   sendJoinRoomInfo,
+  sendChatRoomInfo,
   deleteFromDatabase,
   writeJoinRoomSocketInfo
 } = require('./socketRedis');
@@ -53,15 +57,29 @@ client.del('username1');
 client.del('socketsId1');
 client.del('playersNumber1');
 client.del('associations1');
+client.del('chatMessages1');
+client.del('chatAvatars1');
+client.del('chatUserNames1');
+client.del('chatSocketsId1');
+client.del('chatDates1');
 
 const roomArrays = [
   `avatar${rooms[0].split('')[4]}`,
   `username${rooms[0].split('')[4]}`,
   `socketsId${rooms[0].split('')[4]}`,
-  `associations${rooms[0].split('')[4]}`
+  `associations${rooms[0].split('')[4]}`,
+  `chatMessages${rooms[0].split('')[4]}`,
+  `chatAvatars${rooms[0].split('')[4]}`,
+  `chatUserNames${rooms[0].split('')[4]}`,
+  `chatSocketsId${rooms[0].split('')[4]}`,
+  `chatDates${rooms[0].split('')[4]}`
 ];
 client.set(`playersNumber${rooms[0].split('')[4]}`, 0);
+
 let playersNumber = 0;
+
+const cards = [];
+
 const socketConnect = io => {
   io.on('connection', socket => {
     // now you can access user info through socket.request.user
@@ -71,34 +89,72 @@ const socketConnect = io => {
     let socketRoom;
     // number of players in the room
 
-    socket.on('joinRoom', async room => {
-      if (rooms.includes(room) && playersNumber < 10) {
-        playersNumber += 1;
-        console.log('playersNumber', playersNumber);
-        socket.join(room);
-        socketRoom = room;
+    const joinRoom = async room => {
+      console.log('joinRoom', permission);
+      if (permission) {
+        permission = false;
+        if (rooms.includes(room) && playersNumber < 10) {
+          playersNumber += 1;
+          console.log('playersNumber', playersNumber);
+          socket.join(room);
+          socketRoom = room;
 
-        await sendJoinRoomInfo(socket, room);
-        await io.in(room).emit('action', {
-          type: 'ADD_PLAYER',
-          avatar: user.avatar,
-          username: user.name,
-          socketsId: socket.id
-        });
-        await writeJoinRoomSocketInfo(user, room, socket);
+          await sendJoinRoomInfo(socket, room);
+          await sendChatRoomInfo(socket, room);
+          await io.in(room).emit('action', {
+            type: 'ADD_PLAYER',
+            avatar: user.avatar,
+            username: user.name,
+            socketsId: socket.id
+          });
+          await writeJoinRoomSocketInfo(user, room, socket);
 
-        socket.to(room).emit('newUser', {
-          message: `New player has joined to the room ${room}`
-        });
-        console.log(
-          `New player has joined to the room ${room} with id`,
-          socket.id
-        );
+          socket.to(room).emit('newUser', {
+            message: `New player has joined to the room ${room}`
+          });
+          permission = true;
+          console.log(
+            `New player has joined to the room ${room} with id`,
+            socket.id
+          );
+        } else {
+          socket.emit('error', 'Error, no room with such name existed');
+          socket.disconnect();
+        }
       } else {
-        socket.emit('error', 'Error, no room with such name existed');
-        socket.disconnect();
+        setTimeout(() => joinRoom(room), 1000);
       }
-    });
+    };
+
+    socket.on('joinRoom', room => joinRoom(room));
+    //   async room => {
+    //   if (rooms.includes(room) && playersNumber < 10) {
+    //     playersNumber += 1;
+    //     console.log('playersNumber', playersNumber);
+    //     socket.join(room);
+    //     socketRoom = room;
+    //
+    //     await sendJoinRoomInfo(socket, room);
+    //     await io.in(room).emit('action', {
+    //       type: 'ADD_PLAYER',
+    //       avatar: user.avatar,
+    //       username: user.name,
+    //       socketsId: socket.id
+    //     });
+    //     await writeJoinRoomSocketInfo(user, room, socket);
+    //
+    //     socket.to(room).emit('newUser', {
+    //       message: `New player has joined to the room ${room}`
+    //     });
+    //     console.log(
+    //       `New player has joined to the room ${room} with id`,
+    //       socket.id
+    //     );
+    //   } else {
+    //     socket.emit('error', 'Error, no room with such name existed');
+    //     socket.disconnect();
+    //   }
+    // });
 
     console.log(socket.id);
 
@@ -134,6 +190,12 @@ const socketConnect = io => {
                 user.logged_in = true;
                 console.log(user);
                 console.log(socket.id);
+                socket.emit('action', {
+                  type: 'USER_INFO',
+                  avatar: user.avatar,
+                  username: user.name,
+                  socketId: socket.id
+                });
                 return socket.emit('joinRoom', { isAuthenticated: true });
               });
             });
@@ -156,6 +218,95 @@ const socketConnect = io => {
             type: 'REPORT_ASSOCIATION',
             association: action.association
           });
+        case 'CHAT_MESSAGE':
+          client.rpush(
+            `chatMessages${socketRoom.split('')[4]}`,
+            `${action.message}`
+          );
+          client.rpush(
+            `chatAvatars${socketRoom.split('')[4]}`,
+            `${action.avatar}`
+          );
+          client.rpush(
+            `chatUserNames${socketRoom.split('')[4]}`,
+            `${action.username}`
+          );
+          client.rpush(
+            `chatSocketsId${socketRoom.split('')[4]}`,
+            `${action.socketId}`
+          );
+          client.rpush(`chatDates${rooms[0].split('')[4]}`, `${action.date}`);
+          client.llen(
+            `chatMessages${socketRoom.split('')[4]}`,
+            (err, value) => {
+              if (value > 30) {
+                client.ltrim(`chatMessages${socketRoom.split('')[4]}`, 1, 30);
+                client.ltrim(`chatAvatars${socketRoom.split('')[4]}`, 1, 30);
+                client.ltrim(`chatUserNames${socketRoom.split('')[4]}`, 1, 30);
+                client.ltrim(`chatSocketsId${socketRoom.split('')[4]}`, 1, 30);
+                client.ltrim(`chatDates${socketRoom.split('')[4]}`, 1, 30);
+              }
+            }
+          );
+          // eslint-disable-next-line prettier/prettier
+          client.lrange(`chatMessages${socketRoom.split('')[4]}`, 0, -1, (err, value) => {
+              console.log(value);
+            }
+          );
+          return socket.to(socketRoom).emit('action', {
+            type: 'CHAT_MESSAGE',
+            message: action.message,
+            avatar: action.avatar,
+            username: action.username,
+            socketId: action.socketId,
+            date: action.date
+          });
+        case 'HANG_OUT_THE_CARDS_SERVER':
+          const hangOutCards = () => {
+            const num = Math.ceil(Math.random() * 10);
+            console.log(num);
+            let count = 0;
+            while (count < num) {
+              count += 1;
+              cards.sort(() => {
+                return 0.5 - Math.random();
+              });
+            }
+          };
+          Cards.find({})
+            .sort({ field: 'desc' })
+            .then(data => {
+              data.map(element => cards.push(element.url));
+              hangOutCards();
+              console.log(cards);
+              console.log('playersNumber Cards', playersNumber);
+              // eslint-disable-next-line prettier/prettier
+              client.lrange(`socketsId${socketRoom.split('')[4]}`, 0, -1, (err, value) => {
+                  console.log('socketsId', value);
+                  const readyCards = [];
+                  value.forEach(() => {
+                    readyCards.push({
+                      type: 'HANG_OUT_THE_CARDS',
+                      playerCards: []
+                    });
+                  });
+                  let count = 0;
+                  while (count < 6) {
+                    value.forEach((element, index) =>
+                      readyCards[index].playerCards.push(cards.shift())
+                    );
+                    count += 1;
+                  }
+                  console.log('readyCards', readyCards);
+                  console.log('cards after', cards);
+                  value.forEach((element, index) =>
+                    io.to(value[index]).emit('action', readyCards[index])
+                  );
+                }
+              );
+            })
+            .catch(error => console.log(error));
+          break;
         default:
       }
     });
@@ -184,7 +335,7 @@ const socketConnect = io => {
 
     socket.on('disconnect', function() {
       console.log('user disconnected');
-      // number of all connetion
+      // number of all connections
       // console.log(io.engine.clientsCount);
     });
   });

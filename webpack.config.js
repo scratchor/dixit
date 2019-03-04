@@ -2,7 +2,12 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.jsx',
+  // entry: './src/index.jsx',
+  entry: [
+    'webpack-dev-server/client?http://0.0.0.0:2033',
+    'webpack/hot/only-dev-server',
+    './src/index.jsx'
+  ],
   module: {
     rules: [
       {
@@ -36,9 +41,11 @@ module.exports = {
   ],
   devtool: 'inline-source-map',
   devServer: {
+    disableHostCheck: true,
     inline: true,
     contentBase: './dist',
     hot: true,
+    host: '0.0.0.0',
     port: 2033,
     historyApiFallback: {
       index: 'index.html'

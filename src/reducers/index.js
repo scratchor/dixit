@@ -6,6 +6,9 @@ import avatarRatingReducer from './avatarRatingReducer';
 import socketReducer from './socketReducer';
 import ratingReducer from './ratingReducer';
 import infoReducer from './infoReducer';
+import chatReducer from './chatReducer';
+import userInfoReducer from './userInfoReducer';
+import dealCardsReducer from './dealCardsReducer';
 
 export default combineReducers({
   auth: authReducer,
@@ -14,5 +17,8 @@ export default combineReducers({
   avatarRating: avatarRatingReducer,
   socketReducer,
   ratingReducer,
-  infoReducer
+  infoReducer,
+  chatReducer,
+  userInfoReducer,
+  dealCardsReducer
 });

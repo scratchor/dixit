@@ -1,12 +1,14 @@
 import styled from 'styled-components';
 
-const Wrapper = styled.div`
+const Wrapper = styled.img`
   background-color: yellow;
-  width: 19%;
-  height: 18vh;
-  margin: 1% 0.5%;
+  width: 18%;
+  height: 20vh;
+  margin: 1vh 1%;
   box-sizing: border-box;
   display: inline-block;
+  border: 1px solid white;
+  border-radius: 7px;
 `;
 
 export default Wrapper;

@@ -60,7 +60,7 @@ const Wrapper = styled.div`
       transform 200ms cubic-bezier(0.1, 0, 0.7, 1.5);
     &:after {
       content: 'GO!';
-      font-size: 2vw;
+      font-size: 1.5em;
     }
     z-index: 2;
   }
@@ -77,8 +77,8 @@ const Wrapper = styled.div`
   .fancy-button {
     margin: auto;
     position: relative;
-    width: 50px;
-    height: 50px;
+    width: 55px;
+    height: 55px;
   }
 
   .frills,

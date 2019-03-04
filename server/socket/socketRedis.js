@@ -1,5 +1,5 @@
 const client = require('../databases/redis/client');
-let { permission } = require('../config/permission');
+// let { permission } = require('../config/permission');
 
 const sendJoinRoomInfo = (socket, room) =>
   new Promise(res => {
@@ -34,6 +34,44 @@ const sendJoinRoomInfo = (socket, room) =>
     });
   });
 
+const sendChatRoomInfo = (socket, room) =>
+  new Promise(res => {
+    // eslint-disable-next-line prettier/prettier
+    client.lrange(`chatMessages${room.split('')[4]}`, 0, -1, (err, chatMessages) => {
+        console.log('sendChatRoomInfo', chatMessages);
+        // eslint-disable-next-line prettier/prettier
+      client.lrange(`chatAvatars${room.split('')[4]}`, 0, -1, (err, chatAvatars) => {
+            console.log('sendChatRoomInfo', chatAvatars);
+            // eslint-disable-next-line prettier/prettier
+        client.lrange(`chatUserNames${room.split('')[4]}`, 0, -1, (err, chatUserNames) => {
+                console.log('sendChatRoomInfo', chatUserNames);
+                // eslint-disable-next-line prettier/prettier
+          client.lrange(`chatSocketsId${room.split('')[4]}`, 0, -1, (err, chatSocketsId) => {
+                    console.log('sendChatRoomInfo', chatSocketsId);
+                    // eslint-disable-next-line prettier/prettier
+              client.lrange(`chatDates${room.split('')[4]}`, 0, -1, (err, chatDates) => {
+                        console.log('sendChatRoomInfo', chatDates);
+                        socket.emit('action', {
+                          type: 'CHAT_ROOM_INFO',
+                          chatMessages,
+                          chatAvatars,
+                          chatUserNames,
+                          chatSocketsId,
+                          chatDates
+                        });
+                        res();
+                      }
+                    );
+                  }
+                );
+              }
+            );
+          }
+        );
+      }
+    );
+  });
+
 const writeJoinRoomSocketInfo = (user, room, socket) => {
   client.rpush(`avatar${room.split('')[4]}`, `${user.avatar}`);
   client.rpush(`username${room.split('')[4]}`, `${user.name}`);
@@ -54,6 +92,7 @@ const writeJoinRoomSocketInfo = (user, room, socket) => {
 
 const deleteFromDatabase = (socketRoom, socket, roomArrays, io) => {
   permission = false;
+  console.log('deleteFromDatabase', permission);
   console.log('Disconnecting - deleting the socket from the game database!');
 
   new Promise(res => {
@@ -89,8 +128,10 @@ const deleteFromDatabase = (socketRoom, socket, roomArrays, io) => {
         client.lset(e, i, 'delete', () => {
           client.lrem(e, 1, 'delete', () => {
             // console.log after the last list
+
             if (e === 'socketsId1') {
               permission = true;
+              console.log(permission);
               // eslint-disable-next-line prettier/prettier
                 client.lrange(`avatar${socketRoom.split('')[4]}`, 0, -1, (err, value) => {
                   console.log(value);
@@ -123,6 +164,7 @@ const deleteFromDatabase = (socketRoom, socket, roomArrays, io) => {
 
 module.exports = {
   sendJoinRoomInfo,
+  sendChatRoomInfo,
   writeJoinRoomSocketInfo,
   deleteFromDatabase
 };

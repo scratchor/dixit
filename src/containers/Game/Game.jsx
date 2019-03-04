@@ -21,16 +21,6 @@ class Game extends Component {
     });
 
     socket.on('value', data => console.log(data));
-    let todo = true;
-    socket.on('joinRoom', data => {
-      if (todo) {
-        todo = false;
-        // sdsddds
-        if (data.isAuthenticated) {
-          socket.emit('joinRoom', 'game1');
-        }
-      }
-    });
   }
 
   componentWillUpdate() {

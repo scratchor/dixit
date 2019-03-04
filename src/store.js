@@ -14,16 +14,24 @@ if (!token) {
 }
 const socket = io('http://localhost:5000', {
   query: `auth_token=${token}`
+  // reconnectionDelay: 1000,
+  // reconnection: true,
+  // reconnectionAttempts: 10,
+  // transports: ['websocket'],
+  // agent: false, // [2] Please don't set this to true
+  // upgrade: false,
+  // rejectUnauthorized: false
 });
 
-// Connection failed
-// socket.on('error', function(err) {
-//   console.log(err);
-//   throw new Error(err);
-// });
 // Connection succeeded
 socket.on('success', function(data) {
   console.log(data.message);
+});
+
+socket.on('joinRoom', data => {
+  if (data.isAuthenticated) {
+    socket.emit('joinRoom', 'game1');
+  }
 });
 
 const middleware = [thunk, socketIoMiddleware(socket), logger];
