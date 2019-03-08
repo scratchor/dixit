@@ -11,6 +11,14 @@ const Wrapper = styled.div`
   text-align: center;
   padding: 0.5%;
   box-shadow: 0 0 10px 5px rgba(221, 221, 221, 0.5);
+
+  .status {
+    height: 7vh;
+    width: 100%;
+    margin: 1vh auto;
+    color: rgba(255, 255, 255, 0.5);
+   font-size: 0.9em
+  }
 `;
 
 export default Wrapper;

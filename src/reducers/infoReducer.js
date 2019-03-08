@@ -14,7 +14,6 @@ export default (state = initialState, action) => {
       return {
         ...state,
         message: action.message
-        // startGameInfo: true
       };
     default:
       return state;

@@ -5,12 +5,15 @@ import Wrapper from './RatingStyled';
 
 import PlayerInfo from './Container/PlayerInfo';
 import StartButton from './Container/StartButton';
+import { changeGameStatus } from '../../../actions/gameStatus';
 
 class Rating extends Component {
   componentDidUpdate() {
     const { players } = this.props;
-    const { master, playersNumber, ifGameStarted } = players;
-    if (master && !ifGameStarted && playersNumber === 3) {
+    const { changeGameStatus } = this.props;
+    console.log(this.props);
+    const { master, playersNumber, ifGameStarted, masterMadeStep } = players;
+    if (playersNumber === 3 && master && !ifGameStarted) {
       setTimeout(() => {
         return alert(
           'Hello! We already have free players in the room! And now you can start the game! ' +
@@ -18,6 +21,22 @@ class Rating extends Component {
         );
       }, 1000);
     }
+    const changeStatus = () => {
+      if (!ifGameStarted && playersNumber >= 3) {
+        changeGameStatus(
+          `Waiting till ${players.username[0]} starts the game..`
+        );
+      } else if (ifGameStarted && playersNumber >= 3 && !masterMadeStep) {
+        changeGameStatus(
+          `Waiting till ${players.username[0]} enter assosiation..`
+        );
+      } else if (ifGameStarted && playersNumber >= 3 && masterMadeStep) {
+        changeGameStatus(
+          `Waiting till all players put card similiar with assosiation..`
+        );
+      }
+    };
+    changeStatus();
   }
 
   render() {
@@ -46,7 +65,8 @@ Rating.propTypes = {
   players: PropTypes.PropTypes.shape({
     playersNumber: PropTypes.number,
     type: PropTypes.string
-  }).isRequired
+  }).isRequired,
+  changeGameStatus: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => {
@@ -55,4 +75,13 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(Rating);
+const mapDispatchToProps = dispatch => {
+  return {
+    changeGameStatus: status => dispatch(changeGameStatus(status))
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Rating);

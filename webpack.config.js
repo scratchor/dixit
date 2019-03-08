@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   // entry: './src/index.jsx',
   entry: [
-    'webpack-dev-server/client?http://0.0.0.0:2033',
+    'webpack-dev-server/client?http://localhost:2033',
     'webpack/hot/only-dev-server',
     './src/index.jsx'
   ],
@@ -45,8 +45,9 @@ module.exports = {
     inline: true,
     contentBase: './dist',
     hot: true,
-    host: '0.0.0.0',
+    host: 'localhost',
     port: 2033,
+    headers: { 'Access-Control-Allow-Origin': '*' },
     historyApiFallback: {
       index: 'index.html'
     }

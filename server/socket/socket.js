@@ -62,6 +62,7 @@ client.del('chatAvatars1');
 client.del('chatUserNames1');
 client.del('chatSocketsId1');
 client.del('chatDates1');
+client.del('ifGameStarted1');
 
 const roomArrays = [
   `avatar${rooms[0].split('')[4]}`,
@@ -75,6 +76,7 @@ const roomArrays = [
   `chatDates${rooms[0].split('')[4]}`
 ];
 client.set(`playersNumber${rooms[0].split('')[4]}`, 0);
+client.set(`ifGameStarted${rooms[0].split('')[4]}`, false);
 
 let playersNumber = 0;
 
@@ -90,7 +92,7 @@ const socketConnect = io => {
     // number of players in the room
 
     const joinRoom = async room => {
-      console.log('joinRoom', permission);
+      console.log('joinRoom permission', permission);
       if (permission) {
         permission = false;
         if (rooms.includes(room) && playersNumber < 10) {
@@ -98,7 +100,6 @@ const socketConnect = io => {
           console.log('playersNumber', playersNumber);
           socket.join(room);
           socketRoom = room;
-
           await sendJoinRoomInfo(socket, room);
           await sendChatRoomInfo(socket, room);
           await io.in(room).emit('action', {
@@ -291,7 +292,7 @@ const socketConnect = io => {
                     });
                   });
                   let count = 0;
-                  while (count < 6) {
+                  while (count < 5) {
                     value.forEach((element, index) =>
                       readyCards[index].playerCards.push(cards.shift())
                     );
@@ -307,6 +308,22 @@ const socketConnect = io => {
             })
             .catch(error => console.log(error));
           break;
+        case 'CHANGE_GAME_STATUS':
+          return socket.to(socketRoom).emit('action', {
+            type: 'CHANGE_GAME_STATUS',
+            status: action.status
+          });
+        case 'START_GAME':
+          client.set(`ifGameStarted${rooms[0].split('')[4]}`, true);
+          return socket.to(socketRoom).emit('action', {
+            type: 'START_GAME',
+            ifGameStarted: action.ifGameStarted
+          });
+        case 'TRANSPORT_PLAYERCARD_TO_EXPOSEDCARDS':
+          return socket.to(socketRoom).emit('action', {
+            type: 'TRANSPORT_PLAYERCARD_TO_EXPOSEDCARDS',
+            src: action.src
+          });
         default:
       }
     });

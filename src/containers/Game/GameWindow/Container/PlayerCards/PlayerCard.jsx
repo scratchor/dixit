@@ -3,11 +3,27 @@ import PropTypes from 'prop-types';
 import Wrapper from './PlayerCardStyled';
 
 const playerCard = props => {
+  const { src, loadImages, click } = props;
   return (
-    <Wrapper src="https://www.dropbox.com/s/ozkzfrl5gycq4d3/91.jpg?raw=1" />
+    <Wrapper
+      src={src}
+      onLoad={loadImages}
+      onClick={click}
+      className="playerCard view"
+    />
   );
 };
 
-playerCard.propTypes = {};
+playerCard.defaultProps = {
+  src: null,
+  loadImages: null,
+  click: null
+};
+
+playerCard.propTypes = {
+  src: PropTypes.string,
+  loadImages: PropTypes.func,
+  click: PropTypes.func
+};
 
 export default playerCard;

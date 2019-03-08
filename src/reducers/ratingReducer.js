@@ -27,7 +27,7 @@ export default function(state = initialState, action) {
   let players;
   switch (action.type) {
     // eslint-disable-next-line prettier/prettier
-    case DELETE_STATE_PLAYERS:                                                         // DELETE_STATE_PLAYERS
+    case DELETE_STATE_PLAYERS:                                           // DELETE_STATE_PLAYERS
       players = {
         playersNumber: 0,
         avatar: [],
@@ -45,7 +45,7 @@ export default function(state = initialState, action) {
         players
       };
     // eslint-disable-next-line prettier/prettier
-    case ADD_PLAYER:                                                            // ADD_PLAYER
+    case ADD_PLAYER:                                                       // ADD_PLAYER
 
       players = {
         ...state.players,
@@ -61,14 +61,17 @@ export default function(state = initialState, action) {
         players
       };
     // eslint-disable-next-line prettier/prettier
-    case ADD_PLAYER_OLD_STATUS:                                              // ADD_PLAYER_OLD_STATUS
+    case ADD_PLAYER_OLD_STATUS:                                     // ADD_PLAYER_OLD_STATUS
 
       if (action.avatar.length === 0) {
         return state;
       }
+      const bool = (action.ifGameStarted === 'true');
+      console.log(bool);
       players = {
         ...state.players,
         playersNumber: action.avatar.length,
+        ifGameStarted: bool,
         avatar: [...state.players.avatar, ...action.avatar],
         // score: [...state.players.score, action.score],
         username: [...state.players.username, ...action.username],
@@ -80,7 +83,7 @@ export default function(state = initialState, action) {
         players
       };
     // eslint-disable-next-line prettier/prettier
-    case DELETE_PLAYER:                                                         // DELETE_PLAYER
+    case DELETE_PLAYER:                                                 // DELETE_PLAYER
 
       const i = state.players.socketsId.indexOf(action.socketId);
       const newPlayers = state.players;
@@ -114,18 +117,18 @@ export default function(state = initialState, action) {
         players
       };
     // eslint-disable-next-line prettier/prettier
-    case START_GAME:                                                            // START_GAME
+    case START_GAME:                                                       // START_GAME
 
       players = {
         ...state.players,
-        ifGameStarted: action.ifGameStarted
+        ifGameStarted: true
       };
       return {
         ...state,
         players
       };
     // eslint-disable-next-line prettier/prettier
-    case REPORT_ASSOCIATION:                                                            // REPORT_ASSOCIATION
+    case REPORT_ASSOCIATION:                                           // REPORT_ASSOCIATION
 
       players = {
         ...state.players,

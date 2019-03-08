@@ -9,6 +9,7 @@ import { socket } from '../store';
 const killStartButton = () => {
   return {
     type: START_GAME,
+    meta: { remote: true },
     ifGameStarted: true
   };
 };

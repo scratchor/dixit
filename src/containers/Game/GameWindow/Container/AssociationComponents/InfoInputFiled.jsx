@@ -13,7 +13,7 @@ const infoInputField = ({ props }) => {
     master && !masterMadeStep ? (
       <input id="association" placeholder="Enter your association!" />
     ) : (
-      <p>{association || 'Association'}</p>
+      <p>{association || 'Here will appear association'}</p>
     );
   return <Wrapper>{Elem}</Wrapper>;
 };

@@ -12,6 +12,7 @@ const Wrapper = styled.div`
   p {
     width: 100%;
     font-size: 1.2em;
+    word-break: break-all;
   }
   input {
     width: 100%;

@@ -13,19 +13,28 @@ const sendJoinRoomInfo = (socket, room) =>
             // eslint-disable-next-line prettier/prettier
           client.get(`playersNumber${room.split('')[4]}`, (err, playersNumber) => {
                 console.log('sendJoinRoomInfo playersNumber', playersNumber);
-                if (playersNumber === '0') {
-                  socket.emit('action', {
-                    type: 'MAKE_MASTER',
-                    master: true
-                  });
-                }
-                socket.emit('action', {
-                  type: 'ADD_PLAYER_OLD_STATUS',
-                  avatar,
-                  username,
-                  socketsId
-                });
-                res();
+                // eslint-disable-next-line prettier/prettier
+            client.get(`ifGameStarted${room.split('')[4]}`, (err, ifGameStarted) => {
+                    console.log(
+                      'sendJoinRoomInfo ifGameStarted',
+                      ifGameStarted
+                    );
+                    if (playersNumber === '0') {
+                      socket.emit('action', {
+                        type: 'MAKE_MASTER',
+                        master: true
+                      });
+                    }
+                    socket.emit('action', {
+                      type: 'ADD_PLAYER_OLD_STATUS',
+                      avatar,
+                      username,
+                      socketsId,
+                      ifGameStarted
+                    });
+                    res();
+                  }
+                );
               }
             );
           }

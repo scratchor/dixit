@@ -9,6 +9,7 @@ import infoReducer from './infoReducer';
 import chatReducer from './chatReducer';
 import userInfoReducer from './userInfoReducer';
 import dealCardsReducer from './dealCardsReducer';
+import gameStatusReducer from './gameStatusReducer';
 
 export default combineReducers({
   auth: authReducer,
@@ -20,5 +21,6 @@ export default combineReducers({
   infoReducer,
   chatReducer,
   userInfoReducer,
-  dealCardsReducer
+  dealCardsReducer,
+  gameStatusReducer
 });

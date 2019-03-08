@@ -34,6 +34,14 @@ const Wrapper = styled.div`
     clear: left;
     z-index: 2;
   }
+
+  .animateExposed {
+    transform: rotateY(180deg);
+  }
+
+  .hidden {
+    opacity: 0;
+  }
 `;
 
 export default Wrapper;

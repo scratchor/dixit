@@ -4,9 +4,30 @@ import Wrapper from './CardStyled';
 import foto from '../../../Chat/Container/MessageFieldComponent/MessageComponent/Foto';
 
 const card = props => {
-  const url = 'https://www.dropbox.com/s/n6dgsyjkhjlyoch/7.jpg?raw=1';
-  return <Wrapper src={url} />;
+  const { src, loadImages, click } = props;
+  return (
+    <Wrapper className="exposedCard hidden">
+      <div className="face">
+        <img
+          src="https://www.dropbox.com/s/uasx16bfjbv2r18/casing.jpg?raw=1"
+          alt="Imaginarium card"
+          onLoad={loadImages}
+        />
+      </div>
+      <div className="back face">
+        <img src={src} alt="Imaginarium card" />
+      </div>
+    </Wrapper>
+  );
 };
-card.propTypes = {};
+
+card.defaultProps = {
+  src: null
+};
+
+card.propTypes = {
+  src: PropTypes.string,
+  loadImages: PropTypes.func.isRequired
+};
 
 export default card;

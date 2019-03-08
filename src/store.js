@@ -13,14 +13,18 @@ if (!token) {
   token = '';
 }
 const socket = io('http://localhost:5000', {
-  query: `auth_token=${token}`
-  // reconnectionDelay: 1000,
-  // reconnection: true,
-  // reconnectionAttempts: 10,
-  // transports: ['websocket'],
-  // agent: false, // [2] Please don't set this to true
-  // upgrade: false,
-  // rejectUnauthorized: false
+  query: `auth_token=${token}`,
+  reconnectionDelay: 1000,
+  reconnection: true,
+  reconnectionAttempts: 10,
+  transports: ['websocket'],
+  agent: false, // [2] Please don't set this to true
+  upgrade: false,
+  rejectUnauthorized: false
+  // 'reconnection delay': 2500,
+  // secure: true,
+  // 'max reconnection attempts': 10,
+  // reconnection: true
 });
 
 // Connection succeeded
@@ -40,8 +44,8 @@ const store = createStore(
   rootReducer,
   initialState,
   compose(
-    applyMiddleware(...middleware),
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    applyMiddleware(...middleware)
+    // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   )
 );
 
