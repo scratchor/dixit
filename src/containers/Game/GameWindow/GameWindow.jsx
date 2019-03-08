@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 import Wrapper from './GameWindowStyled';
 import Association from './Container/Association';
 import ExposedCards from './Container/ExposedCards';
@@ -8,7 +9,14 @@ import PlayerCards from './Container/PlayerCards';
 
 class GameWindow extends Component {
   shouldComponentUpdate(nextProps) {
+    console.log('shouldComponentUpdate GameWindow');
+    console.log(nextProps);
     const cardsNew = nextProps.cards;
+    const { playersNumber, email, master } = nextProps;
+    const { masterCard, guessedCards } = cardsNew;
+    if (masterCard && guessedCards.length === playersNumber - 1) {
+      this.finishedRound(masterCard, guessedCards, email, master);
+    }
     const { props } = this;
     const cardsPrev = props.cards;
     const playerCardsBool = !cardsNew.playerCards.every((e, i) => {
@@ -19,6 +27,34 @@ class GameWindow extends Component {
     });
     return playerCardsBool || ExposedCardsBool || false;
   }
+
+  finishedRound = (masterCard, guessedCards, email, master) => {
+    console.log('finishedRound');
+    const some = guessedCards.some(e => e === masterCard);
+    const every = guessedCards.every(e => e === masterCard);
+    if (every) {
+      this.request({
+        email,
+        score: `${master ? 0 : 3}`
+      });
+    } else if (some) {
+      this.request({
+        email,
+        score: '5'
+      });
+    } else {
+      this.request({
+        email,
+        score: `${master ? 0 : 3}`
+      });
+    }
+  };
+
+  request = data => {
+    axios
+      .put('http://localhost:5000/api/users/score', data)
+      .catch(err => console.log(err));
+  };
 
   render() {
     const { cards } = this.props;
@@ -35,16 +71,29 @@ class GameWindow extends Component {
 }
 
 GameWindow.defaultProps = {
-  cards: { playerCards: [], exposedCards: [] }
+  cards: {
+    playerCards: [],
+    exposedCards: []
+  },
+  master: false,
+  email: null
 };
 
 GameWindow.propTypes = {
-  cards: PropTypes.shape({})
+  cards: PropTypes.shape({}),
+  playersNumber: PropTypes.number.isRequired,
+  masterMadeStep: PropTypes.bool.isRequired,
+  master: PropTypes.bool,
+  email: PropTypes.string
 };
 
 const mapStateToProps = state => {
   return {
-    cards: state.dealCardsReducer.cards
+    cards: state.dealCardsReducer.cards,
+    email: state.userInfoReducer.user.email,
+    playersNumber: state.ratingReducer.players.playersNumber,
+    master: state.ratingReducer.players.master,
+    masterMadeStep: state.ratingReducer.players.masterMadeStep
   };
 };
 

@@ -11,22 +11,20 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const users = require('./routes/api/users');
 
-app.use(
-  cors({
-    allowedHeaders: ['sessionId', 'Content-Type'],
-    exposedHeaders: ['sessionId'],
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    preflightContinue: false
-  })
-);
+// app.use(
+// //   cors({
+// //     allowedHeaders: ['sessionId', 'Content-Type'],
+// //     exposedHeaders: ['sessionId'],
+// //     origin: '*',
+// //     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+// //     preflightContinue: false
+// //   })
+// // );
+
+app.use(cors());
 
 // app.use((req, res, next) => {
-//   res.setHeader(
-//     'Access-Control-Allow-Origin',
-//     'http://localhost:2033',
-//     'http://797ec9cc.ngrok.io'
-//   );
+//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:2033');
 //   res.setHeader(
 //     'Access-Control-Allow-Methods',
 //     'GET, POST, OPTIONS, PUT, PATCH, DELETE'

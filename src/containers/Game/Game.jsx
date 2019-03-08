@@ -10,7 +10,13 @@ import deleteStatePlayers from '../../actions/deleteStatePlayers';
 
 class Game extends Component {
   componentWillMount() {
-    const token = sessionStorage.getItem('jwtToken');
+    let token = sessionStorage.getItem('jwtToken');
+
+    const newToken = token.split('');
+    newToken.splice(0, 7);
+    token = newToken.join('');
+
+    console.log(token);
     socket.emit('action', {
       type: 'Authentication',
       token

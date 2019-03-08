@@ -9,7 +9,7 @@ const Wrapper = styled.div`
   position: relative;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 2vw;  
+  font-size: 1em;  
 `;
 
 export default Wrapper;

@@ -4,7 +4,8 @@ const initialState = {
   user: {
     socketId: undefined,
     avatar: '',
-    username: undefined
+    username: undefined,
+    email: undefined
   }
 };
 
@@ -16,7 +17,8 @@ export default function(state = initialState, action) {
       user = {
         socketId: action.socketId,
         avatar: action.avatar,
-        username: action.username
+        username: action.username,
+        email: action.email
       };
       return {
         ...state,

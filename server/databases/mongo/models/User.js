@@ -16,6 +16,14 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
+  score: {
+    type: String,
+    default: '0'
+  },
+  rate: {
+    type: String,
+    default: '0'
+  },
   avatar: {
     type: String
   },

@@ -12,6 +12,10 @@ let token = sessionStorage.getItem('jwtToken');
 if (!token) {
   token = '';
 }
+const newToken = token.split('');
+newToken.splice(0, 7);
+token = newToken.join('');
+
 const socket = io('http://localhost:5000', {
   query: `auth_token=${token}`,
   reconnectionDelay: 1000,
@@ -44,8 +48,8 @@ const store = createStore(
   rootReducer,
   initialState,
   compose(
-    applyMiddleware(...middleware)
-    // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    applyMiddleware(...middleware),
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   )
 );
 

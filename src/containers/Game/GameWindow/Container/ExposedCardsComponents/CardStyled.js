@@ -34,6 +34,35 @@ const Wrapper = styled.div`
   ${Wrapper}:hover {
     transform: rotateY(180deg);
   }
+
+  .back {
+    overflow: hidden;
+  }
+
+  .selected:after {
+    content: 'SELECTED';
+    background: #c76649;
+    z-index: 800;
+    padding-top: 3px;
+    color: white;
+    font-family: Roboto;
+    letter-spacing: 1px;
+    font-weight: 400;
+    text-transform: none;
+    text-align: center;
+    display: inline-block;
+    width: 100px;
+    font-size: 12px;
+    line-height: 14px;
+    transform-origin: center center;
+    top: 19px;
+    border-bottom: 2px solid #7a3521;
+    right: -22px;
+    transform: rotate(45deg);
+    position: absolute;
+    box-shadow: 0 0 10px 5px rgba(221,221,221,0.4);
+};
+  }
 `;
 
 export default Wrapper;

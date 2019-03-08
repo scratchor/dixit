@@ -11,7 +11,6 @@ class Rating extends Component {
   componentDidUpdate() {
     const { players } = this.props;
     const { changeGameStatus } = this.props;
-    console.log(this.props);
     const { master, playersNumber, ifGameStarted, masterMadeStep } = players;
     if (playersNumber === 3 && master && !ifGameStarted) {
       setTimeout(() => {
@@ -47,6 +46,7 @@ class Rating extends Component {
           key={players.socketsId[i]}
           avatar={e}
           name={players.username[i]}
+          score={players.score[i]}
           status="everythig is oook"
         />
       );

@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Wrapper from './PlayerInfoStyled';
 
@@ -7,21 +6,21 @@ import Score from './Components/Score';
 import PlayerNameStat from './Components/PlayerNameStat';
 import Avatar from './Components/Avatar';
 
-const playerInfo = props => {
+const playerInfo = ({ avatar, name, status, score }) => {
   return (
     <Wrapper>
-      <Avatar imgObj={{ url: props.avatar }} />
-      <Score score="23" />
-      <PlayerNameStat name={props.name} status={props.status} />
+      <Avatar imgObj={{ url: avatar }} />
+      <Score score={score} />
+      <PlayerNameStat name={name} status={status} />
     </Wrapper>
   );
 };
 
-// const mapStateToProps = state => {
-//   return {
-//     avatar: state.avatarRating.avatar
-//   };
-// };
+playerInfo.propTypes = {
+  avatar: PropTypes.string.isRequired,
+  score: PropTypes.string.isRequired,
+  status: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired
+};
 
-// export default connect(mapStateToProps)(playerInfo);
 export default playerInfo;

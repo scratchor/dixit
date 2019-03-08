@@ -11,32 +11,37 @@ const sendJoinRoomInfo = (socket, room) =>
         client.lrange(`socketsId${room.split('')[4]}`, 0, -1, (err, socketsId) => {
             console.log('sendJoinRoomInfo socketsId');
             // eslint-disable-next-line prettier/prettier
+          client.lrange(`score${room.split('')[4]}`, 0, -1, (err, score) => {
+              console.log('sendJoinRoomInfo score');
+              // eslint-disable-next-line prettier/prettier
           client.get(`playersNumber${room.split('')[4]}`, (err, playersNumber) => {
-                console.log('sendJoinRoomInfo playersNumber', playersNumber);
-                // eslint-disable-next-line prettier/prettier
+                  console.log('sendJoinRoomInfo playersNumber', playersNumber);
+                  // eslint-disable-next-line prettier/prettier
             client.get(`ifGameStarted${room.split('')[4]}`, (err, ifGameStarted) => {
-                    console.log(
-                      'sendJoinRoomInfo ifGameStarted',
-                      ifGameStarted
-                    );
-                    if (playersNumber === '0') {
+                      console.log(
+                        'sendJoinRoomInfo ifGameStarted',
+                        ifGameStarted
+                      );
+                      if (playersNumber === '0') {
+                        socket.emit('action', {
+                          type: 'MAKE_MASTER',
+                          master: true
+                        });
+                      }
                       socket.emit('action', {
-                        type: 'MAKE_MASTER',
-                        master: true
+                        type: 'ADD_PLAYER_OLD_STATUS',
+                        avatar,
+                        username,
+                        socketsId,
+                        ifGameStarted,
+                        score
                       });
+                      res();
                     }
-                    socket.emit('action', {
-                      type: 'ADD_PLAYER_OLD_STATUS',
-                      avatar,
-                      username,
-                      socketsId,
-                      ifGameStarted
-                    });
-                    res();
-                  }
-                );
-              }
-            );
+                  );
+                }
+              );
+            });
           }
         );
       });
@@ -85,6 +90,7 @@ const writeJoinRoomSocketInfo = (user, room, socket) => {
   client.rpush(`avatar${room.split('')[4]}`, `${user.avatar}`);
   client.rpush(`username${room.split('')[4]}`, `${user.name}`);
   client.rpush(`socketsId${room.split('')[4]}`, `${socket.id}`);
+  client.rpush(`score${room.split('')[4]}`, `${user.score}`);
   client.get(`playersNumber${room.split('')[4]}`, (err, playersNumber) => {
     console.log(playersNumber);
     const newPlayersNumber = +playersNumber + 1;
@@ -99,7 +105,7 @@ const writeJoinRoomSocketInfo = (user, room, socket) => {
   });
 };
 
-const deleteFromDatabase = (socketRoom, socket, roomArrays, io) => {
+const deleteFromDatabase = (socketRoom, socket, roomArraysDelete, io) => {
   permission = false;
   console.log('deleteFromDatabase', permission);
   console.log('Disconnecting - deleting the socket from the game database!');
@@ -115,7 +121,7 @@ const deleteFromDatabase = (socketRoom, socket, roomArrays, io) => {
       const i = value.indexOf(socket.id);
       if (i === 0 && value[1]) {
         io.to(`${value[1]}`).emit('action', {
-          type: 'MAKE_MASTER',
+          type: 'MAKE_MASTER_AFTER_DELETION',
           master: true
         });
       }
@@ -133,7 +139,7 @@ const deleteFromDatabase = (socketRoom, socket, roomArrays, io) => {
           );
         }
       );
-      roomArrays.forEach(e => {
+      roomArraysDelete.forEach(e => {
         client.lset(e, i, 'delete', () => {
           client.lrem(e, 1, 'delete', () => {
             // console.log after the last list

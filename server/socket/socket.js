@@ -63,6 +63,7 @@ client.del('chatUserNames1');
 client.del('chatSocketsId1');
 client.del('chatDates1');
 client.del('ifGameStarted1');
+client.del('score1');
 
 const roomArrays = [
   `avatar${rooms[0].split('')[4]}`,
@@ -73,7 +74,15 @@ const roomArrays = [
   `chatAvatars${rooms[0].split('')[4]}`,
   `chatUserNames${rooms[0].split('')[4]}`,
   `chatSocketsId${rooms[0].split('')[4]}`,
-  `chatDates${rooms[0].split('')[4]}`
+  `chatDates${rooms[0].split('')[4]}`,
+  `score${rooms[0].split('')[4]}`
+];
+
+const roomArraysDelete = [
+  `avatar${rooms[0].split('')[4]}`,
+  `username${rooms[0].split('')[4]}`,
+  `score${rooms[0].split('')[4]}`,
+  `socketsId${rooms[0].split('')[4]}`
 ];
 client.set(`playersNumber${rooms[0].split('')[4]}`, 0);
 client.set(`ifGameStarted${rooms[0].split('')[4]}`, false);
@@ -106,6 +115,7 @@ const socketConnect = io => {
             type: 'ADD_PLAYER',
             avatar: user.avatar,
             username: user.name,
+            score: user.score,
             socketsId: socket.id
           });
           await writeJoinRoomSocketInfo(user, room, socket);
@@ -195,7 +205,8 @@ const socketConnect = io => {
                   type: 'USER_INFO',
                   avatar: user.avatar,
                   username: user.name,
-                  socketId: socket.id
+                  socketId: socket.id,
+                  email: user.email
                 });
                 return socket.emit('joinRoom', { isAuthenticated: true });
               });
@@ -324,6 +335,13 @@ const socketConnect = io => {
             type: 'TRANSPORT_PLAYERCARD_TO_EXPOSEDCARDS',
             src: action.src
           });
+        case 'GUESS_NARRATOR_CARD':
+          return socket.to(socketRoom).emit('action', {
+            type: 'GUESS_NARRATOR_CARD',
+            master: action.master,
+            src: action.src,
+            socketId: action.socketId
+          });
         default:
       }
     });
@@ -346,7 +364,7 @@ const socketConnect = io => {
           socketId: socket.id
         });
         playersNumber -= 1;
-        deleteFromDatabase(socketRoom, socket, roomArrays, io);
+        deleteFromDatabase(socketRoom, socket, roomArraysDelete, io);
       }
     });
 

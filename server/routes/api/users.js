@@ -78,8 +78,8 @@ router.post('/login', (req, res) => {
           (err, token) => {
             res.json({
               success: true,
-              //token: `Bearer ${token}`
-              token: `${token}`
+              token: `Bearer ${token}`
+              // token: `${token}`
             });
           }
         );
@@ -90,6 +90,26 @@ router.post('/login', (req, res) => {
     });
   });
 });
+
+router.put(
+  '/score',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    console.log(req.body);
+    User.findOne({ email: req.body.email })
+      .then(data => {
+        console.log(data.score);
+        const score = +data.score + +req.body.score;
+        User.findOneAndUpdate({ email: req.body.email }, { score }).then(() => {
+          User.findOne({ email: req.body.email }).then(data => {
+            console.log(data);
+            res.json(data);
+          });
+        });
+      })
+      .catch(err => console.log(err));
+  }
+);
 
 router.get(
   '/current',

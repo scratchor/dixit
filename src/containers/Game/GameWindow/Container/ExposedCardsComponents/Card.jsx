@@ -14,7 +14,7 @@ const card = props => {
           onLoad={loadImages}
         />
       </div>
-      <div className="back face">
+      <div className="back face" onClick={click}>
         <img src={src} alt="Imaginarium card" />
       </div>
     </Wrapper>
@@ -27,7 +27,8 @@ card.defaultProps = {
 
 card.propTypes = {
   src: PropTypes.string,
-  loadImages: PropTypes.func.isRequired
+  loadImages: PropTypes.func.isRequired,
+  click: PropTypes.func.isRequired
 };
 
 export default card;
