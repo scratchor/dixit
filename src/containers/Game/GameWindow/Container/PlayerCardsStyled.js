@@ -18,13 +18,16 @@ const Wrapper = styled.div`
     visibility: hidden;
   }
 
+  .opacity {
+    opacity: 0;
+  }
+
   .animation {
     opacity: 0; /*Элемент полностью прозрачный (невидимый)*/
     transition: 1s; /*Скорость перехода состояния элемента*/
 
     animation: show 3s 1; /* Указываем название анимации, её время и количество повторов*/
     animation-fill-mode: forwards; /* Чтобы элемент оставался в конечном состоянии анимации */
-    animation-delay: 1s; /* Задержка перед началом */
   }
 
   @keyframes show {

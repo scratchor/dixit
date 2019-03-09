@@ -6,7 +6,9 @@ import {
   START_GAME,
   REPORT_ASSOCIATION,
   DELETE_STATE_PLAYERS,
-  MAKE_MASTER_AFTER_DELETION
+  MAKE_MASTER_AFTER_DELETION,
+  ADD_SCORE_HIGHLITER,
+  FINISHED_ROUND
 } from '../actions/types';
 
 const initialState = {
@@ -16,12 +18,14 @@ const initialState = {
     score: [],
     username: [],
     // status: [],
+    addScore: [null, null, null, null, null, null, null, null, null, null],
     socketsId: [],
     master: false,
     ifGameStarted: false,
     masterMadeStep: false,
     isMasterOut: false,
-    association: ''
+    association: '',
+    finishedRound: false
   }
 };
 
@@ -35,12 +39,15 @@ export default function(state = initialState, action) {
         avatar: [],
         score: [],
         username: [],
+        addScore: [null, null, null, null, null, null, null, null, null, null],
         // status: [],
         socketsId: [],
         master: false,
         ifGameStarted: false,
         masterMadeStep: false,
-        association: ''
+        isMasterOut: false,
+        association: '',
+        finishedRound: false
       };
       return {
         ...state,
@@ -86,7 +93,7 @@ export default function(state = initialState, action) {
     // eslint-disable-next-line prettier/prettier
     case DELETE_PLAYER:                                                 // DELETE_PLAYER
 
-      const i = state.players.socketsId.indexOf(action.socketId);
+      let i = state.players.socketsId.indexOf(action.socketId);
       const newPlayers = state.players;
       Object.values(newPlayers).forEach(e =>
         Array.isArray(e) ? e.splice(i, 1) : false
@@ -101,7 +108,7 @@ export default function(state = initialState, action) {
         // status: [...state.players.status, action.status],
         socketsId: newPlayers.socketsId
       };
-      console.log(state);
+
       return {
         ...state,
         players
@@ -148,6 +155,33 @@ export default function(state = initialState, action) {
         masterMadeStep: true,
         isMasterOut: true,
         master: true
+      };
+      return {
+        ...state,
+        players
+      };
+    // eslint-disable-next-line prettier/prettier
+    case ADD_SCORE_HIGHLITER:                                          // ADD_SCORE_HIGHLITER
+
+      const { socketsId, addScore } = state.players;
+      i = socketsId.indexOf(action.socketId);
+
+      addScore.splice(i, 1, action.addScore);
+
+      players = {
+        ...state.players,
+        addScore
+      };
+      return {
+        ...state,
+        players
+      };
+    // eslint-disable-next-line prettier/prettier
+    case FINISHED_ROUND:                                              // FINISHED_ROUND
+
+      players = {
+        ...state.players,
+        finishedRound: true
       };
       return {
         ...state,

@@ -6,16 +6,33 @@ import Wrapper from './GameWindowStyled';
 import Association from './Container/Association';
 import ExposedCards from './Container/ExposedCards';
 import PlayerCards from './Container/PlayerCards';
+import addScoreHighliter from '../../../actions/addScoreHighliter';
+import addOneCard from '../../../actions/addOneCard';
+import finishedRound from '../../../actions/finishedRound';
 
 class GameWindow extends Component {
   shouldComponentUpdate(nextProps) {
-    console.log('shouldComponentUpdate GameWindow');
-    console.log(nextProps);
     const cardsNew = nextProps.cards;
-    const { playersNumber, email, master } = nextProps;
+    const {
+      playersNumber,
+      finishedRound,
+      email,
+      master,
+      socketId,
+      addOneCard,
+      MakeFinishedRound
+    } = nextProps;
     const { masterCard, guessedCards } = cardsNew;
-    if (masterCard && guessedCards.length === playersNumber - 1) {
-      this.finishedRound(masterCard, guessedCards, email, master);
+    if (
+      !finishedRound &&
+      masterCard &&
+      guessedCards.length === playersNumber - 1
+    ) {
+      MakeFinishedRound();
+      this.finishedRound(masterCard, guessedCards, email, master, socketId);
+      if (master) {
+        addOneCard();
+      }
     }
     const { props } = this;
     const cardsPrev = props.cards;
@@ -28,25 +45,31 @@ class GameWindow extends Component {
     return playerCardsBool || ExposedCardsBool || false;
   }
 
-  finishedRound = (masterCard, guessedCards, email, master) => {
+  finishedRound = (masterCard, guessedCards, email, master, socketId) => {
+    const { addScoreHighliter } = this.props;
     console.log('finishedRound');
     const some = guessedCards.some(e => e === masterCard);
     const every = guessedCards.every(e => e === masterCard);
     if (every) {
+      const score = `${master ? 0 : 3}`;
       this.request({
         email,
-        score: `${master ? 0 : 3}`
+        score
       });
+      addScoreHighliter(socketId, score);
     } else if (some) {
       this.request({
         email,
         score: '5'
       });
+      addScoreHighliter(socketId, 5);
     } else {
+      const score = `${master ? 0 : 3}`;
       this.request({
         email,
-        score: `${master ? 0 : 3}`
+        score
       });
+      addScoreHighliter(socketId, score);
     }
   };
 
@@ -76,25 +99,44 @@ GameWindow.defaultProps = {
     exposedCards: []
   },
   master: false,
-  email: null
+  email: null,
+  socketId: null
 };
 
 GameWindow.propTypes = {
   cards: PropTypes.shape({}),
   playersNumber: PropTypes.number.isRequired,
-  masterMadeStep: PropTypes.bool.isRequired,
+  finishedRound: PropTypes.bool.isRequired,
   master: PropTypes.bool,
-  email: PropTypes.string
+  email: PropTypes.string,
+  socketId: PropTypes.string,
+  addScoreHighliter: PropTypes.func.isRequired,
+  addOneCard: PropTypes.func.isRequired,
+  MakeFinishedRound: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => {
   return {
     cards: state.dealCardsReducer.cards,
     email: state.userInfoReducer.user.email,
+    socketId: state.userInfoReducer.user.socketId,
     playersNumber: state.ratingReducer.players.playersNumber,
+    finishedRound: state.ratingReducer.players.finishedRound,
     master: state.ratingReducer.players.master,
     masterMadeStep: state.ratingReducer.players.masterMadeStep
   };
 };
 
-export default connect(mapStateToProps)(GameWindow);
+const mapDispatchToProps = dispatch => {
+  return {
+    addScoreHighliter: (socketId, addScore) =>
+      dispatch(addScoreHighliter(socketId, addScore)),
+    addOneCard: () => dispatch(addOneCard()),
+    MakeFinishedRound: () => dispatch(finishedRound())
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(GameWindow);

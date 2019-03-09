@@ -15,7 +15,7 @@ class ExposedCards extends Component {
       let time = 0;
       exposedCards = [].slice.call(exposedCards);
       exposedCards.forEach(e => {
-        time += 1000;
+        time += 500;
         setTimeout(function animate() {
           e.classList.add('animateExposed');
         }, time);

@@ -18,27 +18,33 @@ class PlayerCards extends Component {
     return !cardsNew.every((e, i) => {
       return e === props[i];
     });
+    // return true;
   }
 
-  handleImageLoaded = () => {
+  handleImageLoaded = e => {
     const { loadImages } = this.state;
-    loadImages.push('1');
+    loadImages.push(e.target);
     this.setState({
       loadImages
     });
     const { state } = this;
-    if (state.loadImages.length >= 5) {
+    if (state.loadImages.length === 5) {
       console.log('КАРТИНКИ ЗАГРУЖЕНЫ');
       let imgs = document.querySelectorAll('.playerCard');
       imgs = [].slice.call(imgs);
       let time = 0;
       imgs.forEach(e => {
-        time += 1000;
+        time += 500;
         setTimeout(function() {
           e.classList.remove('view');
           e.classList.add('animation');
         }, time);
       });
+    } else if (state.loadImages.length > 5) {
+      console.log('КАРТИНКА ЗАГРУЖЕНА');
+      const img = state.loadImages.pop();
+      img.classList.remove('hidden');
+      img.classList.add('animation');
     }
   };
 
@@ -68,15 +74,17 @@ class PlayerCards extends Component {
   };
 
   render() {
+    console.log(this.props);
     const { props } = this.props;
     const array = props;
     const PlayerCards =
       array.length > 0 ? (
-        array.map(e => {
+        array.map((e, i) => {
+          console.log(e);
           return (
             <PlayerCard
               src={e}
-              key={e}
+              key={i}
               loadImages={this.handleImageLoaded}
               click={this.handleClick}
             />

@@ -12,6 +12,7 @@ const Wrapper = styled.div`
   border-radius: 7px;
   transform-style: preserve-3d;
   transition: all 1s linear;
+  cursor: pointer;
 
   img {
     width: 100%;

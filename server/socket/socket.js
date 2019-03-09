@@ -342,7 +342,28 @@ const socketConnect = io => {
             src: action.src,
             socketId: action.socketId
           });
-        default:
+        case 'ADD_SCORE_HIGHLITER':
+          console.log('ADD_SCORE_HIGHLITER', action.socketId, action.addScore);
+          return socket.to(socketRoom).emit('action', {
+            type: 'ADD_SCORE_HIGHLITER',
+            socketId: action.socketId,
+            addScore: action.addScore
+          });
+        case 'ADD_ONE_CARD_ACTION':
+          if (cards.length > 0) {
+            // eslint-disable-next-line prettier/prettier
+            client.lrange(`socketsId${socketRoom.split('')[4]}`, 0, -1, (err, socketsId) => {
+                socketsId.forEach(e => {
+                  const src = cards.shift();
+                  console.log('ADD_ONE_CARD', e, src, cards);
+                  io.to(e).emit('action', {
+                    type: 'ADD_ONE_CARD',
+                    src
+                  });
+                });
+              }
+            );
+          }
       }
     });
 

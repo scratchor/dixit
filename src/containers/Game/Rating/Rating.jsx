@@ -46,6 +46,8 @@ class Rating extends Component {
           key={players.socketsId[i]}
           avatar={e}
           name={players.username[i]}
+          addScore={players.addScore[i]}
+          id={i}
           score={players.score[i]}
           status="everythig is oook"
         />
