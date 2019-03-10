@@ -9,6 +9,19 @@ class StartButton extends Component {
     click: false
   };
 
+  componentWillUpdate(nextProps, nextState) {
+    const newMaster = nextProps.players.master;
+    const { props } = this;
+    const { players } = this.props;
+    const { ifGameStarted } = players;
+    const prevMaster = props.players.master;
+    if (newMaster && newMaster !== prevMaster && ifGameStarted) {
+      setTimeout(() => {
+        alert('You time to enter your association and click "GO!"');
+      }, 1000);
+    }
+  }
+
   handleClick = () => {
     const { click } = this.state;
     if (!click) {
@@ -24,11 +37,10 @@ class StartButton extends Component {
   };
 
   render() {
+    console.log('render');
     const { gameStatus } = this.props;
     const { players } = this.props;
-    const { master } = players;
-    const { playersNumber } = players;
-    const { ifGameStarted } = players;
+    const { master, playersNumber, ifGameStarted } = players;
     if (master && !ifGameStarted && playersNumber >= 3) {
       return <Wrapper onClick={this.handleClick}>START!</Wrapper>;
     }

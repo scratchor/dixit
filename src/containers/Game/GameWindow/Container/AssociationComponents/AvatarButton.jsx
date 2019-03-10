@@ -23,8 +23,10 @@ class AvatarButton extends Component {
     const { ifGameStarted } = this.props;
     if (ifGameStarted) {
       const input = document.getElementById('association');
-      const { reportAssociation } = this.props;
-      reportAssociation(input.value);
+      if (input.value.trim().length > 0) {
+        const { reportAssociation } = this.props;
+        reportAssociation(input.value);
+      }
     }
   };
 

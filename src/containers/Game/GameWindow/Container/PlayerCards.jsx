@@ -18,7 +18,6 @@ class PlayerCards extends Component {
     return !cardsNew.every((e, i) => {
       return e === props[i];
     });
-    // return true;
   }
 
   handleImageLoaded = e => {
@@ -36,7 +35,7 @@ class PlayerCards extends Component {
       imgs.forEach(e => {
         time += 500;
         setTimeout(function() {
-          e.classList.remove('view');
+          e.classList.remove('hidden');
           e.classList.add('animation');
         }, time);
       });
@@ -66,25 +65,24 @@ class PlayerCards extends Component {
       e.target.classList.add('hidden');
       writePlayerCardIndex(i);
       const { src } = e.target;
-      // setTimeout(function async() {
-      //   return transportPlayerCardToExposedCards(src);
-      // }, 1000);
       transportPlayerCardToExposedCards(src);
     }
   };
 
   render() {
-    console.log(this.props);
+    this.setState(prevState => ({
+      loadImages: prevState.loadImages,
+      click: false
+    }));
     const { props } = this.props;
     const array = props;
     const PlayerCards =
       array.length > 0 ? (
-        array.map((e, i) => {
-          console.log(e);
+        array.map(e => {
           return (
             <PlayerCard
               src={e}
-              key={i}
+              key={e}
               loadImages={this.handleImageLoaded}
               click={this.handleClick}
             />

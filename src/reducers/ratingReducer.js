@@ -8,7 +8,8 @@ import {
   DELETE_STATE_PLAYERS,
   MAKE_MASTER_AFTER_DELETION,
   ADD_SCORE_HIGHLITER,
-  FINISHED_ROUND
+  FINISHED_ROUND,
+  START_NEXT_ROUND
 } from '../actions/types';
 
 const initialState = {
@@ -163,13 +164,18 @@ export default function(state = initialState, action) {
     // eslint-disable-next-line prettier/prettier
     case ADD_SCORE_HIGHLITER:                                          // ADD_SCORE_HIGHLITER
 
-      const { socketsId, addScore } = state.players;
+      const { socketsId } = state.players;
+      const addScore = state.players.addScore.slice();
+      const score = state.players.score.slice();
       i = socketsId.indexOf(action.socketId);
-
+      const socketScore = +score[i] + +action.addScore;
+      console.log(socketScore);
       addScore.splice(i, 1, action.addScore);
+      score.splice(i, 1, socketScore);
 
       players = {
         ...state.players,
+        score,
         addScore
       };
       return {
@@ -183,6 +189,31 @@ export default function(state = initialState, action) {
         ...state.players,
         finishedRound: true
       };
+      return {
+        ...state,
+        players
+      };
+    // eslint-disable-next-line prettier/prettier
+    case START_NEXT_ROUND:                                              // START_NEXT_ROUND
+
+      players = Object.assign({}, state.players);
+      if (!state.players.isMasterOut) {
+        // eslint-disable-next-line no-restricted-syntax
+        for (const prop in players) {
+          if (Array.isArray(players[prop])) {
+            const el = players[prop].shift();
+            players[prop].push(el);
+          }
+        }
+      }
+      players.addScore.fill(null);
+      players.finishedRound = false;
+      players.master = false;
+      players.ifGameStarted = true;
+      players.masterMadeStep = false;
+      players.isMasterOut = false;
+      players.association = '';
+      players.finishedRound = false;
       return {
         ...state,
         players

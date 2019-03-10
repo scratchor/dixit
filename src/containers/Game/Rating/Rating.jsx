@@ -8,6 +8,10 @@ import StartButton from './Container/StartButton';
 import { changeGameStatus } from '../../../actions/gameStatus';
 
 class Rating extends Component {
+  state = {
+    gameStatus: 'Waiting till minimum three players join the game...'
+  };
+
   componentDidUpdate() {
     const { players } = this.props;
     const { changeGameStatus } = this.props;
@@ -21,18 +25,44 @@ class Rating extends Component {
       }, 1000);
     }
     const changeStatus = () => {
+      const { gameStatus } = this.state;
       if (!ifGameStarted && playersNumber >= 3) {
-        changeGameStatus(
-          `Waiting till ${players.username[0]} starts the game..`
-        );
+        if (
+          gameStatus !== `Waiting till ${players.username[0]} starts the game..`
+        ) {
+          changeGameStatus(
+            `Waiting till ${players.username[0]} starts the game..`
+          );
+          this.setState({
+            gameStatus: `Waiting till ${players.username[0]} starts the game..`
+          });
+        }
       } else if (ifGameStarted && playersNumber >= 3 && !masterMadeStep) {
-        changeGameStatus(
+        if (
+          gameStatus !==
           `Waiting till ${players.username[0]} enter assosiation..`
-        );
+        ) {
+          changeGameStatus(
+            `Waiting till ${players.username[0]} enter assosiation..`
+          );
+          this.setState({
+            gameStatus: `Waiting till ${
+              players.username[0]
+            } enter assosiation..`
+          });
+        }
       } else if (ifGameStarted && playersNumber >= 3 && masterMadeStep) {
-        changeGameStatus(
+        if (
+          gameStatus !==
           `Waiting till all players put card similiar with assosiation..`
-        );
+        ) {
+          changeGameStatus(
+            `Waiting till all players put card similiar with assosiation..`
+          );
+          this.setState({
+            gameStatus: `Waiting till all players put card similiar with assosiation..`
+          });
+        }
       }
     };
     changeStatus();

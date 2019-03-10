@@ -42,7 +42,7 @@ socket.on('joinRoom', data => {
   }
 });
 
-const middleware = [thunk, socketIoMiddleware(socket)]//, logger];
+const middleware = [thunk, socketIoMiddleware(socket), logger];
 
 const store = createStore(
   rootReducer,

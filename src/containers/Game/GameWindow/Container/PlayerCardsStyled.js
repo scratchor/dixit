@@ -10,10 +10,6 @@ const Wrapper = styled.div`
   box-shadow: 0 0 10px 5px rgba(221, 221, 221, 0.4);
   border-radius: 5px;
 
-  .view {
-    display: none;
-  }
-
   .hidden {
     visibility: hidden;
   }

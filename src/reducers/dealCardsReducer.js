@@ -3,7 +3,8 @@ import {
   WRITE_PLAYER_CARD_INDEX,
   TRANSPORT_PLAYERCARD_TO_EXPOSEDCARDS,
   GUESS_NARRATOR_CARD,
-  ADD_ONE_CARD
+  ADD_ONE_CARD,
+  DELETE_EXPOSED_CARDS
 } from '../actions/types';
 
 const initialState = {
@@ -21,7 +22,7 @@ export default (state = initialState, action) => {
   let cards;
   switch (action.type) {
     // eslint-disable-next-line prettier/prettier
-    case HANG_OUT_THE_CARDS:                                                   // HANG_OUT_THE_CARDS
+    case HANG_OUT_THE_CARDS:                                                // HANG_OUT_THE_CARDS
       cards = {
         ...state.cards,
         playerCards: [...state.cards.playerCards, ...action.playerCards],
@@ -85,15 +86,26 @@ export default (state = initialState, action) => {
       };
     // eslint-disable-next-line prettier/prettier
     case ADD_ONE_CARD:                                                  // ADD_ONE_CARD
-      console.log('ADD_ONE_CARD', action.src);
+
       const playerCards = state.cards.playerCards.slice();
       const i = state.cards.playerCardIndex;
-      console.log(playerCards);
       playerCards.splice(i, 1, action.src);
-      console.log(playerCards);
       cards = {
         ...state.cards,
         playerCards
+      };
+      return {
+        ...state,
+        cards
+      };
+    // eslint-disable-next-line prettier/prettier
+    case DELETE_EXPOSED_CARDS:                                          // DELETE_EXPOSED_CARDS
+
+      cards = {
+        ...state.cards,
+        exposedCards: [],
+        guessedCards: [],
+        masterCard: undefined
       };
       return {
         ...state,

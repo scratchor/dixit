@@ -39,6 +39,27 @@ const Wrapper = styled.div`
     transform: rotateY(180deg);
   }
 
+  .view {
+    display: none;
+  }
+
+  .deleteExposedAnim {
+    opacity: 1; /*Элемент полностью прозрачный (невидимый)*/
+
+    animation: deleteExposedAnim 3s 1; /* Указываем название анимации, её время и количество повторов*/
+    animation-fill-mode: forwards; /* Чтобы элемент оставался в конечном состоянии анимации */
+  }
+
+  @keyframes deleteExposedAnim {
+    0% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
+
   .hidden {
     opacity: 0;
   }

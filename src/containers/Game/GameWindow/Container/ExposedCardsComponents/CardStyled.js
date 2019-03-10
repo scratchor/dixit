@@ -5,11 +5,8 @@ const Wrapper = styled.div`
   height: 25vh;
   box-sizing: border-box;
   margin: 0.5vh 1%;
-  background-color: green;
   position: relative;
   float: left;
-  border: 1px solid white;
-  border-radius: 7px;
   transform-style: preserve-3d;
   transition: all 1s linear;
   cursor: pointer;

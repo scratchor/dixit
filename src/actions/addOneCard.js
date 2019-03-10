@@ -1,8 +1,9 @@
 import { ADD_ONE_CARD_ACTION } from './types';
 
-export default () => {
+export default isMasterOut => {
   return {
     type: ADD_ONE_CARD_ACTION,
-    meta: { remote: true }
+    meta: { remote: true },
+    isMasterOut
   };
 };

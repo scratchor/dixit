@@ -9,7 +9,7 @@ class Scorehighliter extends Component {
     if (highliter) {
       highliter.classList.add('showAndHide');
       setTimeout(function asa() {
-        const highliter = document.getElementById(`addScore${id}`);
+        //const highliter = document.getElementById(`addScore${id}`);
         highliter.classList.remove('showAndHide');
       }, 9000);
     }
@@ -30,7 +30,7 @@ Scorehighliter.defaultProps = {
 };
 
 Scorehighliter.propTypes = {
-  addScore: PropTypes.string,
+  addScore: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   id: PropTypes.number.isRequired
 };
 export default Scorehighliter;

@@ -20,7 +20,8 @@ class GameWindow extends Component {
       master,
       socketId,
       addOneCard,
-      MakeFinishedRound
+      MakeFinishedRound,
+      isMasterOut
     } = nextProps;
     const { masterCard, guessedCards } = cardsNew;
     if (
@@ -29,9 +30,10 @@ class GameWindow extends Component {
       guessedCards.length === playersNumber - 1
     ) {
       MakeFinishedRound();
+      this.animateDelitionExposedCards();
       this.finishedRound(masterCard, guessedCards, email, master, socketId);
       if (master) {
-        addOneCard();
+        addOneCard(isMasterOut);
       }
     }
     const { props } = this;
@@ -44,6 +46,15 @@ class GameWindow extends Component {
     });
     return playerCardsBool || ExposedCardsBool || false;
   }
+
+  animateDelitionExposedCards = () => {
+    let exposedCards = document.querySelectorAll('.exposedCard');
+    exposedCards = [].slice.call(exposedCards);
+    exposedCards.forEach(e => {
+      console.dir(e);
+      e.children[1].classList.add('deleteExposedAnim');
+    });
+  };
 
   finishedRound = (masterCard, guessedCards, email, master, socketId) => {
     const { addScoreHighliter } = this.props;
@@ -112,7 +123,8 @@ GameWindow.propTypes = {
   socketId: PropTypes.string,
   addScoreHighliter: PropTypes.func.isRequired,
   addOneCard: PropTypes.func.isRequired,
-  MakeFinishedRound: PropTypes.func.isRequired
+  MakeFinishedRound: PropTypes.func.isRequired,
+  isMasterOut: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = state => {
@@ -123,7 +135,8 @@ const mapStateToProps = state => {
     playersNumber: state.ratingReducer.players.playersNumber,
     finishedRound: state.ratingReducer.players.finishedRound,
     master: state.ratingReducer.players.master,
-    masterMadeStep: state.ratingReducer.players.masterMadeStep
+    masterMadeStep: state.ratingReducer.players.masterMadeStep,
+    isMasterOut: state.ratingReducer.players.isMasterOut
   };
 };
 
@@ -131,7 +144,7 @@ const mapDispatchToProps = dispatch => {
   return {
     addScoreHighliter: (socketId, addScore) =>
       dispatch(addScoreHighliter(socketId, addScore)),
-    addOneCard: () => dispatch(addOneCard()),
+    addOneCard: isMasterOut => dispatch(addOneCard(isMasterOut)),
     MakeFinishedRound: () => dispatch(finishedRound())
   };
 };

@@ -24,10 +24,11 @@ playerInfo.defaultProps = {
 
 playerInfo.propTypes = {
   avatar: PropTypes.string.isRequired,
-  score: PropTypes.string.isRequired,
+  score: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   status: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  addScore: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  addScore: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 };
 
 export default playerInfo;

@@ -9,7 +9,7 @@ const playerCard = props => {
       src={src}
       onLoad={loadImages}
       onClick={click}
-      className="playerCard view"
+      className="playerCard hidden"
     />
   );
 };

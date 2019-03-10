@@ -7,6 +7,6 @@ const score = ({ score }) => {
 };
 
 score.propTypes = {
-  score: PropTypes.string.isRequired
+  score: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 };
 export default score;
