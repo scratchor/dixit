@@ -29,12 +29,6 @@ const Wrapper = styled.div`
     margin-top: 3vh;
   }
 
-  //.notification {
-  //   color: white;
-  //  animation: notification 3s linear 1; /* Указываем название анимации, её время и количество повторов*/
-  //  animation-fill-mode: forwards; /* Чтобы элемент оставался в конечном состоянии анимации */
-  //}
-
   @keyframes notification {
     0% {
       transform: translateX(0);
