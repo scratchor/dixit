@@ -5,8 +5,8 @@ const Wrapper = styled.div`
   z-index: 500;
   width: 500px;
   padding: 16px;
-  left: 35%;
-  top: 15%;
+  left: 20%;
+  top: 0%;
   box-sizing: border-box;
   transition: all 0.3s ease-out;
   transform: ${props => (props.show ? 'translateY(0)' : 'translateY(-1000px)')};

@@ -5,11 +5,11 @@ import Wrapper from './PlayerCardsStyled';
 import PlayerCard from './PlayerCards/PlayerCard';
 import writePlayerCardIndex from '../../../../actions/writePlayerCardIndex';
 import transportPlayerCardToExposedCards from '../../../../actions/transportPlayerCardToExposedCards';
+import playerCardsClickAction from '../../../../actions/playerCardsClick';
 
 class PlayerCards extends Component {
   state = {
-    loadImages: [],
-    click: false
+    loadImages: []
   };
 
   shouldComponentUpdate(nextProps) {
@@ -18,6 +18,12 @@ class PlayerCards extends Component {
     return !cardsNew.every((e, i) => {
       return e === props[i];
     });
+  }
+
+  componentDidUpdate() {
+    this.setState(prevState => ({
+      loadImages: prevState.loadImages
+    }));
   }
 
   handleImageLoaded = e => {
@@ -48,13 +54,10 @@ class PlayerCards extends Component {
   };
 
   handleClick = e => {
-    const { click } = this.state;
-    const { players } = this.props;
-    const { masterMadeStep } = players;
-    if (masterMadeStep && !click) {
-      this.setState({
-        click: true
-      });
+    const { players, playerCardsClickAction } = this.props;
+    const { masterMadeStep, playerCardsClick } = players;
+    if (masterMadeStep && !playerCardsClick) {
+      playerCardsClickAction();
       const {
         props,
         writePlayerCardIndex,
@@ -70,10 +73,6 @@ class PlayerCards extends Component {
   };
 
   render() {
-    this.setState(prevState => ({
-      loadImages: prevState.loadImages,
-      click: false
-    }));
     const { props } = this.props;
     const array = props;
     const PlayerCards =
@@ -105,7 +104,8 @@ PlayerCards.propTypes = {
   props: PropTypes.arrayOf(PropTypes.string).isRequired,
   players: PropTypes.shape({}).isRequired,
   writePlayerCardIndex: PropTypes.func.isRequired,
-  transportPlayerCardToExposedCards: PropTypes.func.isRequired
+  transportPlayerCardToExposedCards: PropTypes.func.isRequired,
+  playerCardsClickAction: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => {
@@ -117,6 +117,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     writePlayerCardIndex: i => dispatch(writePlayerCardIndex(i)),
+    playerCardsClickAction: () => dispatch(playerCardsClickAction()),
     transportPlayerCardToExposedCards: src =>
       dispatch(transportPlayerCardToExposedCards(src))
   };

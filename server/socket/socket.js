@@ -1,11 +1,5 @@
-const jwtAuth = require('socketio-jwt-auth');
-const jwt = require('jsonwebtoken');
-const secret = require('../config/keys').secretOrKey;
-const User = require('../databases/mongo/models/User');
-const Cards = require('../databases/mongo/models/Cards');
 const client = require('../databases/redis/client');
-// const { permission } = require('../config/permission');
-// const joinRoom = require('../socket/onJoinRoom');
+
 global.permission = true;
 
 const {
@@ -13,41 +7,13 @@ const {
   sendChatRoomInfo,
   deleteFromDatabase,
   writeJoinRoomSocketInfo
-} = require('./socketRedis');
+} = require('./socketFunctions/socketRedis');
 
-const jwtAuthSocket = bool => {
-  return jwtAuth.authenticate(
-    {
-      secret, // required, used to verify the token's signature
-      algorithm: 'HS256', // optional, default to be HS256
-      succeedWithoutToken: bool
-    },
-
-    (payload, done) => {
-      console.log('Payload in AUTH ', payload);
-      // you done callback will not include any payload data now
-      // if no token was supplied
-      if (payload && payload.id) {
-        User.findById(payload.id, function(err, user) {
-          if (err) {
-            // return error
-            return done(err);
-          }
-          if (!user) {
-            // return fail with an error message
-            return done(null, false, 'user does not exist');
-          }
-          // return success with a user info
-          console.log('Authentication passed!!!');
-          return done(null, user);
-        });
-      } else {
-        console.log('Authentication Failed! You are enter as a guest!!!');
-        return done(); // in your connection handler user.logged_in will be false
-      }
-    }
-  );
-};
+const authentification = require('./socketFunctions/socketActions/authentification');
+const reporAssosiation = require('./socketFunctions/socketActions/reporAssosiation');
+const chatMessage = require('./socketFunctions/socketActions/chatMessage');
+const hangOutTheCards = require('./socketFunctions/socketActions/hangOutTheCards');
+const AddOneCardAction = require('./socketFunctions/socketActions/AddOneCardAction');
 
 // initial prepare
 const rooms = ['game1'];
@@ -89,16 +55,18 @@ client.set(`ifGameStarted${rooms[0].split('')[4]}`, false);
 
 let playersNumber = 0;
 
-const cards = [];
+let cards = [];
 
 const socketConnect = io => {
   io.on('connection', socket => {
+    // if you put token to localStorage (otherwise - for sesionStorage the next to line is false)
     // now you can access user info through socket.request.user
     // socket.request.user.logged_in will be set to true if the user was authenticated
     let { user } = socket.request;
     // room name for current scope
     let socketRoom;
-    // number of players in the room
+
+    console.log(socket.id);
 
     const joinRoom = async room => {
       console.log('joinRoom permission', permission);
@@ -124,6 +92,7 @@ const socketConnect = io => {
             message: `New player has joined to the room ${room}`
           });
           permission = true;
+          // eslint-disable-next-line no-console
           console.log(
             `New player has joined to the room ${room} with id`,
             socket.id
@@ -137,282 +106,116 @@ const socketConnect = io => {
       }
     };
 
-    socket.on('joinRoom', room => joinRoom(room));
-    //   async room => {
-    //   if (rooms.includes(room) && playersNumber < 10) {
-    //     playersNumber += 1;
-    //     console.log('playersNumber', playersNumber);
-    //     socket.join(room);
-    //     socketRoom = room;
-    //
-    //     await sendJoinRoomInfo(socket, room);
-    //     await io.in(room).emit('action', {
-    //       type: 'ADD_PLAYER',
-    //       avatar: user.avatar,
-    //       username: user.name,
-    //       socketsId: socket.id
-    //     });
-    //     await writeJoinRoomSocketInfo(user, room, socket);
-    //
-    //     socket.to(room).emit('newUser', {
-    //       message: `New player has joined to the room ${room}`
-    //     });
-    //     console.log(
-    //       `New player has joined to the room ${room} with id`,
-    //       socket.id
-    //     );
-    //   } else {
-    //     socket.emit('error', 'Error, no room with such name existed');
-    //     socket.disconnect();
-    //   }
-    // });
+    // eslint-disable-next-line prettier/prettier
+    socket.on('joinRoom', room => {                                          // joinRoom
+      joinRoom(room);
+    });
 
-    console.log(socket.id);
-
-    socket.emit('success', {
+    // eslint-disable-next-line prettier/prettier
+    socket.emit('success', {                                                  // success
       message: 'success logged in!'
     });
 
-    socket.on('action', action => {
+    socket.on('action', async action => {
       switch (action.type) {
-        case 'GET_AVATAR':
+        // eslint-disable-next-line prettier/prettier
+        case 'GET_AVATAR':                                                  // GET_AVATAR
           return socket.emit('action', {
             type: 'GET_AVATAR',
             avatar: user.avatar
           });
-        case 'Authentication':
-          const { token } = action;
-          if (token) {
-            jwt.verify(token, secret, (err, payload) => {
-              // if (err.name === 'TokenExpiredError') {
-              //   console.log('socket expired');
-              //   return socket.emit('action', {
-              //     type: 'SOCKET_ERROR',
-              //     message: 'socket expired'
-              //   });
-              // }
-              User.findById(payload.id).then(data => {
-                if (!data) {
-                  socket.emit('error', {
-                    message: 'Game authentication: user not exist'
-                  });
-                }
-                user = data;
-                user.logged_in = true;
-                console.log(user);
-                console.log(socket.id);
-                socket.emit('action', {
-                  type: 'USER_INFO',
-                  avatar: user.avatar,
-                  username: user.name,
-                  socketId: socket.id,
-                  email: user.email
-                });
-                return socket.emit('joinRoom', { isAuthenticated: true });
-              });
-            });
-          }
+
+        // eslint-disable-next-line prettier/prettier
+        case 'Authentification':                                           //  Authentification
+          user = await authentification(socket, action);
+          await socket.emit('joinRoom', { isAuthenticated: true });
           break;
-        case 'INFO_ABOUT_START':
-          return socket.to(socketRoom).emit('action', {
+        // eslint-disable-next-line prettier/prettier
+        case 'INFO_ABOUT_START':                                           // INFO_ABOUT_START
+
+          socket.to(socketRoom).emit('action', {
             type: 'INFO_ABOUT_START',
+            startGameInfo: action.startGameInfo,
             message: action.message
           });
-        case 'REPORT_ASSOCIATION':
-          // eslint-disable-next-line prettier/prettier
-          client.rpush(`associations${socketRoom.split('')[4]}`, `${action.association}`);
-          // eslint-disable-next-line prettier/prettier
-          client.lrange(`associations${socketRoom.split('')[4]}`, 0, -1, (err, value) => {
-              console.log(value);
-            }
-          );
-          return io.in(socketRoom).emit('action', {
-            type: 'REPORT_ASSOCIATION',
-            association: action.association
-          });
-        case 'CHAT_MESSAGE':
-          client.rpush(
-            `chatMessages${socketRoom.split('')[4]}`,
-            `${action.message}`
-          );
-          client.rpush(
-            `chatAvatars${socketRoom.split('')[4]}`,
-            `${action.avatar}`
-          );
-          client.rpush(
-            `chatUserNames${socketRoom.split('')[4]}`,
-            `${action.username}`
-          );
-          client.rpush(
-            `chatSocketsId${socketRoom.split('')[4]}`,
-            `${action.socketId}`
-          );
-          client.rpush(`chatDates${rooms[0].split('')[4]}`, `${action.date}`);
-          client.llen(
-            `chatMessages${socketRoom.split('')[4]}`,
-            (err, value) => {
-              if (value > 30) {
-                client.ltrim(`chatMessages${socketRoom.split('')[4]}`, 1, 30);
-                client.ltrim(`chatAvatars${socketRoom.split('')[4]}`, 1, 30);
-                client.ltrim(`chatUserNames${socketRoom.split('')[4]}`, 1, 30);
-                client.ltrim(`chatSocketsId${socketRoom.split('')[4]}`, 1, 30);
-                client.ltrim(`chatDates${socketRoom.split('')[4]}`, 1, 30);
-              }
-            }
-          );
-          // eslint-disable-next-line prettier/prettier
-          client.lrange(`chatMessages${socketRoom.split('')[4]}`, 0, -1, (err, value) => {
-              console.log(value);
-            }
-          );
-          return socket.to(socketRoom).emit('action', {
-            type: 'CHAT_MESSAGE',
-            message: action.message,
-            avatar: action.avatar,
-            username: action.username,
-            socketId: action.socketId,
-            date: action.date
-          });
-        case 'HANG_OUT_THE_CARDS_SERVER':
-          const hangOutCards = () => {
-            const num = Math.ceil(Math.random() * 10);
-            console.log(num);
-            let count = 0;
-            while (count < num) {
-              count += 1;
-              cards.sort(() => {
-                return 0.5 - Math.random();
-              });
-            }
-          };
-          Cards.find({})
-            .sort({ field: 'desc' })
-            .then(data => {
-              data.map(element => cards.push(element.url));
-              hangOutCards();
-              console.log(cards);
-              console.log('playersNumber Cards', playersNumber);
-              // eslint-disable-next-line prettier/prettier
-              client.lrange(`socketsId${socketRoom.split('')[4]}`, 0, -1, (err, value) => {
-                  console.log('socketsId', value);
-                  const readyCards = [];
-                  value.forEach(() => {
-                    readyCards.push({
-                      type: 'HANG_OUT_THE_CARDS',
-                      playerCards: []
-                    });
-                  });
-                  let count = 0;
-                  while (count < 5) {
-                    value.forEach((element, index) =>
-                      readyCards[index].playerCards.push(cards.shift())
-                    );
-                    count += 1;
-                  }
-                  console.log('readyCards', readyCards);
-                  console.log('cards after', cards);
-                  value.forEach((element, index) =>
-                    io.to(value[index]).emit('action', readyCards[index])
-                  );
-                }
-              );
-            })
-            .catch(error => console.log(error));
           break;
-        case 'CHANGE_GAME_STATUS':
+
+        // eslint-disable-next-line prettier/prettier
+        case 'REPORT_ASSOCIATION':                                        // REPORT_ASSOCIATION
+          reporAssosiation(io, action, socketRoom);
+          break;
+
+        // eslint-disable-next-line prettier/prettier
+        case 'CHAT_MESSAGE':                                              // CHAT_MESSAGE
+          chatMessage(socketRoom, action, socket);
+          break;
+
+        // eslint-disable-next-line prettier/prettier
+        case 'HANG_OUT_THE_CARDS_SERVER':                            // HANG_OUT_THE_CARDS_SERVER
+          cards = await hangOutTheCards(io, cards, socketRoom);
+          break;
+
+        // eslint-disable-next-line prettier/prettier
+        case 'CHANGE_GAME_STATUS':                                        // CHANGE_GAME_STATUS
           return socket.to(socketRoom).emit('action', {
             type: 'CHANGE_GAME_STATUS',
             status: action.status
           });
-        case 'START_GAME':
+
+        // eslint-disable-next-line prettier/prettier
+        case 'START_GAME':                                                     // START_GAME
           client.set(`ifGameStarted${rooms[0].split('')[4]}`, true);
           return socket.to(socketRoom).emit('action', {
             type: 'START_GAME',
             ifGameStarted: action.ifGameStarted
           });
-        case 'TRANSPORT_PLAYERCARD_TO_EXPOSEDCARDS':
+
+        // eslint-disable-next-line prettier/prettier
+        case 'TRANSPORT_PLAYERCARD_TO_EXPOSEDCARDS':        // TRANSPORT_PLAYERCARD_TO_EXPOSEDCARDS
           return socket.to(socketRoom).emit('action', {
             type: 'TRANSPORT_PLAYERCARD_TO_EXPOSEDCARDS',
             src: action.src
           });
-        case 'GUESS_NARRATOR_CARD':
+
+        // eslint-disable-next-line prettier/prettier
+        case 'GUESS_NARRATOR_CARD':                                      // GUESS_NARRATOR_CARD
           return socket.to(socketRoom).emit('action', {
             type: 'GUESS_NARRATOR_CARD',
             master: action.master,
             src: action.src,
             socketId: action.socketId
           });
-        case 'ADD_SCORE_HIGHLITER':
+
+        // eslint-disable-next-line prettier/prettier
+        case 'ADD_SCORE_HIGHLITER':                                      // ADD_SCORE_HIGHLITER
           console.log('ADD_SCORE_HIGHLITER', action.socketId, action.addScore);
           return socket.to(socketRoom).emit('action', {
             type: 'ADD_SCORE_HIGHLITER',
             socketId: action.socketId,
             addScore: action.addScore
           });
-        case 'ADD_ONE_CARD_ACTION':
-          console.log('isMasterOut', action.isMasterOut);
-          setTimeout(() => {
-            io.in(socketRoom).emit('action', {
-              type: 'DELETE_EXPOSED_CARDS'
-            });
-          }, 2000);
-          if (cards.length > 0) {
-            // eslint-disable-next-line prettier/prettier
-            client.lrange(`socketsId${socketRoom.split('')[4]}`, 0, -1, (err, socketsId) => {
-                socketsId.forEach(e => {
-                  const src = cards.shift();
-                  console.log('ADD_ONE_CARD', e, src);
-                  io.to(e).emit('action', {
-                    type: 'ADD_ONE_CARD',
-                    src
-                  });
-                });
-              }
-            );
-            console.log(cards);
-          }
-          setTimeout(() => {
-            io.in(socketRoom).emit('action', {
-              type: 'START_NEXT_ROUND'
-            });
-          }, 8000);
-          setTimeout(() => {
-            if (!action.isMasterOut) {
-              roomArraysDelete.forEach(e => {
-                client.lpop(e, (err, player) => {
-                  client.rpush(e, player);
-                });
-              });
-              // eslint-disable-next-line prettier/prettier
-              client.lrange(`socketsId${socketRoom.split('')[4]}`, 0, -1, (err, socketsId) => {
-                  io.to(socketsId[0]).emit('action', {
-                    type: 'MAKE_MASTER',
-                    master: true
-                  });
-                }
-              );
-            } else {
-              // eslint-disable-next-line prettier/prettier
-              client.lrange(`socketsId${socketRoom.split('')[4]}`, 0, -1, (err, socketsId) => {
-                  io.to(socketsId[0]).emit('action', {
-                    type: 'MAKE_MASTER',
-                    master: true
-                  });
-                }
-              );
-            }
-          }, 10000);
+        // eslint-disable-next-line prettier/prettier
+        case 'ADD_ONE_CARD_ACTION':                                       // ADD_ONE_CARD_ACTION(          ()
+          cards = await AddOneCardAction(
+            io,
+            socketRoom,
+            action,
+            cards,
+            roomArraysDelete
+          );
+          break;
+        default:
+          io.in(socketRoom).emit('action', {
+            error: 'No such subscribe in Socket on server'
+          });
+          break;
       }
     });
 
     console.log('a user connected');
-    client.set('string key', 'string val');
-    client.get('string key', (e, value) => {
-      console.log(value);
-    });
 
-    socket.on('disconnecting', () => {
-      // console.log(io.sockets.adapter.rooms[socketRoom].sockets[socket.id]);
+    // eslint-disable-next-line prettier/prettier
+    socket.on('disconnecting', () => {                                        // disconnecting
       if (
         io.sockets.adapter.rooms[socketRoom] !== undefined &&
         io.sockets.adapter.rooms[socketRoom].sockets[socket.id]
@@ -427,7 +230,8 @@ const socketConnect = io => {
       }
     });
 
-    socket.on('disconnect', function() {
+    // eslint-disable-next-line prettier/prettier
+    socket.on('disconnect', () => {                                       // disconnect
       console.log('user disconnected');
       // number of all connections
       // console.log(io.engine.clientsCount);
@@ -436,6 +240,5 @@ const socketConnect = io => {
 };
 
 module.exports = {
-  jwtAuthSocket,
   socketConnect
 };

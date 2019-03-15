@@ -1,4 +1,4 @@
-const client = require('../databases/redis/client');
+const client = require('../../databases/redis/client');
 // let { permission } = require('../config/permission');
 
 const sendJoinRoomInfo = (socket, room) =>

@@ -9,7 +9,9 @@ import {
   MAKE_MASTER_AFTER_DELETION,
   ADD_SCORE_HIGHLITER,
   FINISHED_ROUND,
-  START_NEXT_ROUND
+  START_NEXT_ROUND,
+  PLAYER_CARDS_CLICK,
+  INFO_MASTER_ABOUT_START_CHECK
 } from '../actions/types';
 
 const initialState = {
@@ -26,7 +28,9 @@ const initialState = {
     masterMadeStep: false,
     isMasterOut: false,
     association: '',
-    finishedRound: false
+    finishedRound: false,
+    playerCardsClick: false,
+    infoMasterAboutStart: false
   }
 };
 
@@ -48,7 +52,9 @@ export default function(state = initialState, action) {
         masterMadeStep: false,
         isMasterOut: false,
         association: '',
-        finishedRound: false
+        finishedRound: false,
+        playerCardsClick: false,
+        infoMasterAboutStart: false
       };
       return {
         ...state,
@@ -127,7 +133,6 @@ export default function(state = initialState, action) {
       };
     // eslint-disable-next-line prettier/prettier
     case START_GAME:                                                       // START_GAME
-
       players = {
         ...state.players,
         ifGameStarted: true
@@ -150,7 +155,6 @@ export default function(state = initialState, action) {
       };
     // eslint-disable-next-line prettier/prettier
     case MAKE_MASTER_AFTER_DELETION:                                // MAKE_MASTER_AFTER_DELETION
-
       players = {
         ...state.players,
         masterMadeStep: true,
@@ -214,6 +218,32 @@ export default function(state = initialState, action) {
       players.isMasterOut = false;
       players.association = '';
       players.finishedRound = false;
+      players.playerCardsClick = false;
+      players.infoMasterAboutStart = false;
+
+      return {
+        ...state,
+        players
+      };
+    // eslint-disable-next-line prettier/prettier
+    case PLAYER_CARDS_CLICK:                                              // PLAYER_CARDS_CLICK
+
+      players = {
+        ...state.players,
+        playerCardsClick: true
+      };
+      return {
+        ...state,
+        players
+      };
+
+    // eslint-disable-next-line prettier/prettier
+    case INFO_MASTER_ABOUT_START_CHECK:                                    // PLAYER_CARDS_CLICK
+
+      players = {
+        ...state.players,
+        infoMasterAboutStart: true
+      };
       return {
         ...state,
         players

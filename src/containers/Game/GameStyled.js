@@ -7,6 +7,7 @@ const Wrapper = styled.div`
   width: 100%;
   height: 94vh;
   min-width: 800px;
+  position: relative;
   //min-height: 100vw;
 
   ${Wrapper}::after {
@@ -22,7 +23,7 @@ const Wrapper = styled.div`
     right: 0;
     position: absolute;
     z-index: -1;
-  
+  }
 `;
 
 export default Wrapper;

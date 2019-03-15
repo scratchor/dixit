@@ -15,6 +15,7 @@ const User = require('../../databases/mongo/models/User');
 router.get('/test', (req, res) => res.json({ msg: 'Users Works' }));
 
 router.post('/register', (req, res) => {
+  console.log('register user');
   const { errors, isValid } = validateRegisterInput(req.body);
 
   if (!isValid) {

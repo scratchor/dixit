@@ -7,10 +7,4 @@ export const changeGameStatus = status => {
   };
 };
 
-// export const changeGameStatusWithSocket = status => {
-//   return {
-//     type: CHANGE_GAME_STATUS,
-//     meta: { remote: true },
-//     status
-//   };
-// };
+

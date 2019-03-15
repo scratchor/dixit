@@ -8,7 +8,7 @@ const Wrapper = styled.form`
   margin-top: 270px;
 
   button {
-    margin-top: 5px;
+    margin-top: 2px;
     margin-right: 75px;
     border: 1px solid white;
     cursor: pointer;
@@ -32,7 +32,7 @@ const Wrapper = styled.form`
   }
 
   label {
-    margin: 10px;
+    margin: 8px;
     color: white;
   }
 

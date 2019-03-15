@@ -51,7 +51,6 @@ class GameWindow extends Component {
     let exposedCards = document.querySelectorAll('.exposedCard');
     exposedCards = [].slice.call(exposedCards);
     exposedCards.forEach(e => {
-      console.dir(e);
       e.children[1].classList.add('deleteExposedAnim');
     });
   };

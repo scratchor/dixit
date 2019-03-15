@@ -1,7 +1,6 @@
 import {
   START_GAME,
   INFO_ABOUT_START,
-  INFO_ABOUT_ASSOCIATION,
   HANG_OUT_THE_CARDS_SERVER
 } from './types';
 import { socket } from '../store';
@@ -13,6 +12,14 @@ const killStartButton = () => {
     ifGameStarted: true
   };
 };
+
+function infoAboutStart(startGameInfo) {
+  socket.emit('action', {
+    type: INFO_ABOUT_START,
+    startGameInfo,
+    message: 'The game has started!'
+  });
+}
 
 const hangOutTheCards = () => {
   return {
@@ -26,27 +33,10 @@ export default () => {
     dispatch(hangOutTheCards());
     dispatch(killStartButton());
     setTimeout(() => {
-      // dispatch(alertStart());
-      socket.emit('action', {
-        type: INFO_ABOUT_START,
-        message: 'The game has started!'
-      });
+      infoAboutStart(true);
     }, 1000);
+    setTimeout(() => {
+      infoAboutStart(false);
+    }, 20000);
   };
 };
-
-function alertStart() {
-  return {
-    type: INFO_ABOUT_START,
-    meta: { remote: true },
-    message: 'The game has started!'
-  };
-}
-
-function alertAboutAssosiation() {
-  return {
-    type: INFO_ABOUT_ASSOCIATION,
-    meta: { remote: true },
-    message: 'Now you should enter your association and click "GO!"'
-  };
-}

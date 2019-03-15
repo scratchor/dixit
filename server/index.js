@@ -63,7 +63,7 @@ const port = process.env.PORT || 5000;
 
 // include socket.io functionality
 
-const { jwtAuthSocket } = require('./socket/socket');
+const jwtAuthSocket = require('./socket/socketFunctions/socketJwtAuthentificate');
 const { socketConnect } = require('./socket/socket');
 
 // using socket middleware

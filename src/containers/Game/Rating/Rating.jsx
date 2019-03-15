@@ -6,6 +6,7 @@ import Wrapper from './RatingStyled';
 import PlayerInfo from './Container/PlayerInfo';
 import StartButton from './Container/StartButton';
 import { changeGameStatus } from '../../../actions/gameStatus';
+import infoAction from '../../../actions/infoMasterStartActions';
 
 class Rating extends Component {
   state = {
@@ -14,15 +15,21 @@ class Rating extends Component {
 
   componentDidUpdate() {
     const { players } = this.props;
-    const { changeGameStatus } = this.props;
-    const { master, playersNumber, ifGameStarted, masterMadeStep } = players;
-    if (playersNumber === 3 && master && !ifGameStarted) {
-      setTimeout(() => {
-        return alert(
-          'Hello! We already have free players in the room! And now you can start the game! ' +
-            'To start - click the button "START!" at the upper left corner of the screen!'
-        );
-      }, 1000);
+    const { changeGameStatus, infoAction } = this.props;
+    const {
+      master,
+      playersNumber,
+      ifGameStarted,
+      masterMadeStep,
+      infoMasterAboutStart
+    } = players;
+    if (
+      !infoMasterAboutStart &&
+      playersNumber === 3 &&
+      master &&
+      !ifGameStarted
+    ) {
+      infoAction();
     }
     const changeStatus = () => {
       const { gameStatus } = this.state;
@@ -98,7 +105,8 @@ Rating.propTypes = {
     playersNumber: PropTypes.number,
     type: PropTypes.string
   }).isRequired,
-  changeGameStatus: PropTypes.func.isRequired
+  changeGameStatus: PropTypes.func.isRequired,
+  infoAction: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => {
@@ -109,7 +117,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    changeGameStatus: status => dispatch(changeGameStatus(status))
+    changeGameStatus: status => dispatch(changeGameStatus(status)),
+    infoAction: startGameInfo => dispatch(infoAction(startGameInfo))
   };
 };
 

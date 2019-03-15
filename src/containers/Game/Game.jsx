@@ -5,6 +5,7 @@ import Wrapper from './GameStyled';
 import Rating from './Rating/Rating';
 import GameWindow from './GameWindow/GameWindow';
 import Chat from './Chat/Chat';
+import NotificationComp from './NotificationComp/NotificationComp';
 import { socket } from '../../store';
 import deleteStatePlayers from '../../actions/deleteStatePlayers';
 
@@ -16,17 +17,10 @@ class Game extends Component {
     newToken.splice(0, 7);
     token = newToken.join('');
 
-    console.log(token);
     socket.emit('action', {
-      type: 'Authentication',
+      type: 'Authentification',
       token
     });
-
-    socket.on('newUser', data => {
-      console.log(data.message);
-    });
-
-    socket.on('value', data => console.log(data));
   }
 
   componentWillUpdate() {
@@ -48,6 +42,7 @@ class Game extends Component {
         <Rating />
         <GameWindow />
         <Chat />
+        <NotificationComp />
       </Wrapper>
     );
   }
