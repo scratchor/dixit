@@ -8,7 +8,7 @@ client.auth('tRkvQDYCj6lqBABxlN0Hr1e48F75ZXnr', function(err) {
   if (err) throw err;
 });
 
-client.on('connect', function() {
+client.on('connect', function() {j
   console.log('Connected to Redis');
 });
 
