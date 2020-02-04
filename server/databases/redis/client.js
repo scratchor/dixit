@@ -1,9 +1,10 @@
 const redis = require('redis');
 
 const client = redis.createClient({
-  url: 'redis://redis-19616.c135.eu-central-1-1.ec2.cloud.redislabs.com:19616'
+  url: 'redis://redis-12642.c135.eu-central-1-1.ec2.cloud.redislabs.com:12642'
+  
 });
-client.auth('ggvzE5oyYBhV0ZNvhKzwP3YTyeXiAT5A', function(err) {
+client.auth('tRkvQDYCj6lqBABxlN0Hr1e48F75ZXnr', function(err) {
   if (err) throw err;
 });
 
